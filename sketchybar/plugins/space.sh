@@ -40,7 +40,7 @@ mouse_clicked() {
     desktophash[7]=26
     desktophash[8]=28
     desktophash[9]=25
-    desktophash[10]=2
+    desktophash[10]=29
     desktopkey=${desktophash[$SID]}
     osascript -e "tell application \"System Events\" to key code $desktopkey using control down"
     fi
