@@ -121,6 +121,8 @@ in
     gitAndTools.gh
     hyperfine
     neofetch
+    asitop
+    poetry
 
     discord
     telegram-desktop
