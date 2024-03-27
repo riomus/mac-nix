@@ -7,4 +7,5 @@ _:
     "whatsapp"
     "sf-symbols"
     "stats"
+    "betterdisplay"
 ]
