@@ -8,4 +8,5 @@ _:
     "sf-symbols"
     "stats"
     "betterdisplay"
+    "quik"
 ]

@@ -60,7 +60,7 @@ in
       plugins = [ "git" "sudo" "docker" "kubectl" ];
     };
     shellAliases = {
-      nixu = " nix run nix-darwin -- switch --flake ~/.config/nix";
+      nixu = "  nix  --extra-experimental-features nix-command --extra-experimental-features  flakes run nix-darwin -- switch --flake ~/.config/nix";
     };
   };
   programs.alacritty= {
@@ -132,6 +132,7 @@ in
     m-cli # useful macOS CLI commands
   ] ++ [ 
   (import ./arc.nix {inherit pkgs;}) 
+  (import ./capcut.nix {inherit pkgs;}) 
   (import ./raycast.nix {inherit pkgs;})
   (import ./jetbrains-toolbox.nix {inherit pkgs;})
   (import ./vlc.nix {inherit pkgs;})
