@@ -53,9 +53,17 @@ nix.gc = {
   # Fonts
   fonts.enableFontDir = true;
   fonts.fonts = with pkgs; [
-     recursive
-     (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
-     source-code-pro
+      recursive
+      (nerdfonts.override { fonts = [ "JetBrainsMono" "FiraCode" "DroidSansMono" "SourceCodePro"]; })
+      source-code-pro
+      noto-fonts
+      noto-fonts-cjk
+      noto-fonts-emoji
+      liberation_ttf
+      fira-code
+      fira-code-symbols
+      mplus-outline-fonts.githubRelease
+      proggyfonts
    ];
 
   # Keyboard
@@ -284,4 +292,6 @@ nix.gc = {
       sketchybar
       jq 
     ];
+
+    
 }

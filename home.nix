@@ -43,6 +43,11 @@ in
        url."ssh://git@github.com/".insteadOf="https://github.com/";
        push.default="current";
     };
+    aliases = {
+      amd = "!git add . && git commit --amend --no-edit";
+      pf = "!git push --force";
+      amdpf = "!git amd && git pf";
+    };
   };
 
   programs.starship = {
@@ -52,15 +57,18 @@ in
   programs.zsh= {
     enable = true;
 
+    enableCompletion = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
     oh-my-zsh = {
       theme = "robbyrussell";
       enable = true;
-      plugins = [ "git" "sudo" "docker" "kubectl" ];
+      plugins = [ "git" "sudo" "docker" "kubectl" "aws"];
     };
     shellAliases = {
       nixu = "  nix  --extra-experimental-features nix-command --extra-experimental-features  flakes run nix-darwin -- switch --flake ~/.config/nix";
+      cat = "bat";
+      ls = "exa";
     };
   };
   programs.alacritty= {
@@ -69,11 +77,11 @@ in
       font = {
         size = 14;
         normal = {
-          family = "Source Code Pro";
+          family = "FiraCode Nerd Font";
           style = "Regular";
         };
         bold = {
-          family = "Source Code Pro";
+          family = "FiraCode Nerd Font";
           style = "Bold";
         };
         italic = {
@@ -105,6 +113,7 @@ in
   programs.navi.enable =true;
   home.packages = with pkgs; [
     # Some basics
+    awscli
     coreutils
     curl
     wget
@@ -132,7 +141,7 @@ in
     m-cli # useful macOS CLI commands
   ] ++ [ 
   (import ./arc.nix {inherit pkgs;}) 
-  (import ./capcut.nix {inherit pkgs;}) 
+  #(import ./capcut-downloader.nix {inherit pkgs;}) 
   (import ./raycast.nix {inherit pkgs;})
   (import ./jetbrains-toolbox.nix {inherit pkgs;})
   (import ./vlc.nix {inherit pkgs;})
@@ -157,6 +166,8 @@ in
   }
   '';
 
+  home.file.".hushlogin".text = ''
+  '';
 
   home.sessionVariables = {
     EDITOR= "vim";
