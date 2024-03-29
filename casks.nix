@@ -9,4 +9,5 @@ _:
     "stats"
     "betterdisplay"
     "quik"
+    "bluesnooze"
 ]
