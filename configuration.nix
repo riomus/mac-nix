@@ -274,6 +274,8 @@ nix.gc = {
         ctrl + shift -left: yabai -m window --warp west
         ctrl + shift -up: yabai -m window --warp north
         ctrl + shift -down: yabai -m window --warp south
+
+        ctrl + q : yabai -m window --close
       '';
     };
 

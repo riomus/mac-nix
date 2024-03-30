@@ -29,7 +29,7 @@ mouse_clicked() {
         fi
       fi
     else    
-    typeset -A desktophash
+    typeset desktophash
     desktophash[0]=29
     desktophash[1]=18
     desktophash[2]=19
