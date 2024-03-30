@@ -267,15 +267,18 @@ nix.gc = {
         ctrl + shift - 7 : yabai -m window --space 7
         ctrl + shift - 8 : yabai -m window --space 8
         ctrl + shift - 9 : yabai -m window --space 9
+        
 
         ctrl - f : yabai -m window --toggle zoom-fullscreen
 
         ctrl + shift -right: yabai -m window --warp east
         ctrl + shift -left: yabai -m window --warp west
         ctrl + shift -up: yabai -m window --warp north
+
+
         ctrl + shift -down: yabai -m window --warp south
 
-        ctrl + q : yabai -m window --close
+        ctrl - q : yabai -m window --close
       '';
     };
 
