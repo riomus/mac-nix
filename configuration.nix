@@ -248,7 +248,7 @@ nix.gc = {
     services.skhd = {
       enable =true;
       skhdConfig = ''
-        ctrl - return : open -na alacritty
+        ctrl - return : open -na kitty
 
         ctrl - b : yabai -m space --layout bsp
         ctrl - s : yabai -m space --layout stack

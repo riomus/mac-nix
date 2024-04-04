@@ -71,43 +71,23 @@ in
       ls = "exa";
     };
   };
-  programs.alacritty= {
-    enable=true;
+  programs.kitty = {
+    enable = true;
     settings = {
-      font = {
-        size = 14;
-        normal = {
-          family = "FiraCode Nerd Font";
-          style = "Regular";
-        };
-        bold = {
-          family = "FiraCode Nerd Font";
-          style = "Bold";
-        };
-        italic = {
-          family = "Source Code Pro";
-          style = "Italic";
-        };
-        bold_italic = {
-          family = "Source Code Pro";
-          style = "Bold Italic";
-        };
-      };
-      scrolling.history = 100000;
-      window ={
-        opacity = 0.8;
-        decorations = "None";
-      };
-      colors = {
-        primary = {
-          background = "0x000000";
-          foreground = "0x00ff15";
-        };
-        cursor = {
-          text = "0xffffff";
-          cursor = "0x00ab0e";
-        };
-      };
+      font_family = "FiraCode Nerd Font";
+      bold_font = "auto";
+      italic_font = "auto";
+      bold_itralic_font = "auto";
+      font_size = 14;
+      disable_ligatures = "never";
+      scrollback_lines = 100000;
+      foreground = "#00ff15";
+      background = "#000000";
+      background_opacity = "0.8";
+      repaint_delay = 10;
+      input_delay = 3;
+      syc_to_monitor = true;
+      macos_hide_titlebar = true;
     };
   };
   programs.navi.enable =true;

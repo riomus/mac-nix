@@ -10,5 +10,4 @@ _:
     "betterdisplay"
     "quik"
     "bluesnooze"
-    "xz@5.4.6"
 ]
