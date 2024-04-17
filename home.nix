@@ -77,7 +77,7 @@ in
       font_family = "FiraCode Nerd Font";
       bold_font = "auto";
       italic_font = "auto";
-      bold_itralic_font = "auto";
+      bold_italic_font = "auto";
       font_size = 14;
       disable_ligatures = "never";
       scrollback_lines = 100000;
@@ -86,8 +86,9 @@ in
       background_opacity = "0.8";
       repaint_delay = 10;
       input_delay = 3;
-      syc_to_monitor = true;
-      macos_hide_titlebar = true;
+      sync_to_monitor = true;
+      hide_window_decorations = true;
+      copy_on_select = true;
     };
   };
   programs.navi.enable =true;
@@ -112,7 +113,8 @@ in
     neofetch
     asitop
     poetry
-
+    postgresql
+    
     discord
     telegram-desktop
     jankyborders

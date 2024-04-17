@@ -248,7 +248,7 @@ nix.gc = {
     services.skhd = {
       enable =true;
       skhdConfig = ''
-        ctrl - return : open -na kitty
+        ctrl - return : open -na kitty --args -c /Users/romanbartusiak/.config/kitty/kitty.conf -T term /Users/romanbartusiak
 
         ctrl - b : yabai -m space --layout bsp
         ctrl - s : yabai -m space --layout stack
