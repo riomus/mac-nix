@@ -3,7 +3,8 @@ let
 vscode-extensions = flakes.nix-vscode-extensions.extensions.aarch64-darwin;
 in
 {
-  home.stateVersion = "23.11";
+  home.stateVersion = "24.05";
+  home.enableNixpkgsReleaseCheck = true;
 
   # https://github.com/malob/nixpkgs/blob/master/home/default.nix
 
@@ -20,7 +21,7 @@ in
   
   programs.vscode = {
   enable = true;
-  immutableExtensionsDir = true;
+  mutableExtensionsDir = false;
   extensions = (with pkgs.vscode-extensions; [
       dracula-theme.theme-dracula
     ]) ++ (with vscode-extensions.vscode-marketplace; [
@@ -66,7 +67,7 @@ in
       plugins = [ "git" "sudo" "docker" "kubectl" "aws"];
     };
     shellAliases = {
-      nixu = "  nix  --extra-experimental-features nix-command --extra-experimental-features  flakes run nix-darwin -- switch --flake ~/.config/nix";
+      nixu = "nix  --extra-experimental-features nix-command --extra-experimental-features  flakes run nix-darwin -- switch --flake ~/.config/nix";
       cat = "bat";
       ls = "exa";
     };
@@ -105,7 +106,7 @@ in
     duf
     openjdk17
     mtr
-    python3
+    python311
     wrk
     spotify
     gitAndTools.gh
