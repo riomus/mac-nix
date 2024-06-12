@@ -67,7 +67,7 @@ in
       plugins = [ "git" "sudo" "docker" "kubectl" "aws"];
     };
     shellAliases = {
-      nixu = "nix  --extra-experimental-features nix-command --extra-experimental-features  flakes run nix-darwin -- switch --flake ~/.config/nix";
+      nixu = "nix  --extra-experimental-features nix-command --extra-experimental-features  flakes run nix-darwin -- switch --flake ~/.config/nix --fallback";
       cat = "bat";
       ls = "exa";
     };
