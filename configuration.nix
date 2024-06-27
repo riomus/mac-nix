@@ -51,8 +51,7 @@ nix.gc = {
   programs.nix-index.enable = true;
 
   # Fonts
-  fonts.fontDir.enable = true;
-  fonts.fonts = with pkgs; [
+  fonts.packages = with pkgs; [
       recursive
       (nerdfonts.override { fonts = [ "JetBrainsMono" "FiraCode" "DroidSansMono" "SourceCodePro"]; })
       source-code-pro

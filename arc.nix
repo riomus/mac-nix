@@ -4,7 +4,7 @@ stdenv.mkDerivation rec {
     name = "arc-browser-latest";
     src = fetchurl {
         url = "https://releases.arc.net/release/Arc-latest.dmg";
-        sha256 = "sha256-02lwBQ4feMYF7hNrvcenTp/w7rabQoRozD6OVOidfZA=";
+        sha256 = "sha256-XrFDYzRUGCSyM8E+zHK/OZMKWYI9kCxUQ2TI98htPWk=";
     };
   nativeBuildInputs = [ undmg unzip ];
   phases = ["unpackPhase" "installPhase"];

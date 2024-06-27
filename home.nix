@@ -106,7 +106,7 @@ in
     duf
     openjdk17
     mtr
-    python311
+    python310
     wrk
     spotify
     gitAndTools.gh
