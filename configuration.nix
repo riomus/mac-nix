@@ -232,7 +232,6 @@ nix.gc = {
         yabai -m rule --add app="^(Telegram)$" space=3;
         yabai -m rule --add app='Ustawienia systemowe' manage=off;
         apps="^(IntelliJ IDEA|WebStorm|RubyMine|PyCharm|DataGrip)$";
-        yabai -m rule --add app="$\{apps\}" space=6
         yabai -m rule --add app="^(Spotify)$" space=8;
         yabai -m rule --add app="^(Slack)$" space=10;
         yabai -m rule --add app="^(Discord)$" space=10;

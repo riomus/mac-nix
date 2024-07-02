@@ -122,9 +122,7 @@ in
   ] ++ lib.optionals stdenv.isDarwin [
     cocoapods
     m-cli # useful macOS CLI commands
-  ] ++ [ 
-  (import ./arc.nix {inherit pkgs;}) 
-  #(import ./capcut-downloader.nix {inherit pkgs;}) 
+  ] ++ [
   (import ./raycast.nix {inherit pkgs;})
   (import ./jetbrains-toolbox.nix {inherit pkgs;})
   (import ./vlc.nix {inherit pkgs;})

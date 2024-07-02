@@ -10,4 +10,5 @@ _:
     "betterdisplay"
     "quik"
     "bluesnooze"
+    "arc"
 ]

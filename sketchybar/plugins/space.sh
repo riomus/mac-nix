@@ -30,7 +30,7 @@ mouse_clicked() {
       fi
     else    
     typeset desktophash
-    desktophash[0]=29
+    typeset hashmodifier
     desktophash[1]=18
     desktophash[2]=19
     desktophash[3]=20
@@ -41,8 +41,20 @@ mouse_clicked() {
     desktophash[8]=28
     desktophash[9]=25
     desktophash[10]=29
+    desktophash[11]=18
+    desktophash[12]=19
+    desktophash[13]=20
+    desktophash[14]=21
+    MODIFIER=', option down'
+    hashmodifier[11]=${MODIFIER}
+    hashmodifier[12]=${MODIFIER}
+    hashmodifier[13]=${MODIFIER}
+    hashmodifier[14]=${MODIFIER}
     desktopkey=${desktophash[$SID]}
-    osascript -e "tell application \"System Events\" to key code $desktopkey using control down"
+    picked_modifier=${hashmodifier[$SID]:-''}
+    command="tell application \"System Events\" to key code $desktopkey using {control down $picked_modifier}"
+    echo $command
+    osascript -e "$command"
     fi
   fi
 }
