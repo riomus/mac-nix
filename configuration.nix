@@ -6,7 +6,7 @@ homebrew = {
     onActivation = {
       autoUpdate = true;
       upgrade = true;
-      cleanup = "zap";
+      cleanup = "none";
     };
     brews = pkgs.callPackage ./brews.nix {};
     casks = pkgs.callPackage ./casks.nix {};

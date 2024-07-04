@@ -139,11 +139,15 @@ in
     source = ./sketchybar;
     recursive = true;
   };
+  home.sessionPath = [
+    "/Users/romanbartusiak/Library/Python/3.9/bin"
+  ];
 
   # Misc configuration files --------------------------------------------------------------------{{{
 
   home.file."Library/Application\ Support/discord/settings.json".text = ''
   {
+
     "MIN_WIDTH":0,
     "MIN_HEIGHT":0
 
