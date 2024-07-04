@@ -11,4 +11,5 @@ _:
     "quik"
     "bluesnooze"
     "arc"
+    "logi-options-plus"
 ]

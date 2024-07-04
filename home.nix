@@ -132,6 +132,9 @@ in
   home.file.".config/starship.toml" = {
     source = ./starship.toml;
   };
+  home.file."Pictures/Backgrounds/1.jpg" = {
+    source = ./bg.jpg;
+  };
   home.file.".config/sketchybar" = {
     source = ./sketchybar;
     recursive = true;
