@@ -1,18 +1,23 @@
 { pkgs, lib, inputs, ... }:
 {
-
+  ids.gids.nixbld = 30000;
+system.stateVersion=5;
 homebrew = {
     enable = true;
+    global = {
+      autoUpdate = true;
+    };
     onActivation = {
       autoUpdate = true;
       upgrade = true;
       cleanup = "none";
+      extraFlags = ["--force"];
     };
     brews = pkgs.callPackage ./brews.nix {};
     casks = pkgs.callPackage ./casks.nix {};
   };
   # Nix configuration ------------------------------------------------------------------------------
-  nix.settings.auto-optimise-store = true;
+  nix.settings.auto-optimise-store = false;
 nix.gc = {
   automatic = true;
   interval = { Weekday = 0; Hour = 0; Minute = 0; };
@@ -21,6 +26,8 @@ nix.gc = {
   nix.settings.substituters = [
     "https://cache.nixos.org/"
   ];
+  nix.settings.cores = 0;
+  nix.settings.max-jobs = "auto";
   nix.settings.trusted-public-keys = [
     "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
   ];
@@ -33,7 +40,6 @@ nix.gc = {
   # Enable experimental nix command and flakes
   # nix.package = pkgs.nixUnstable;
   nix.extraOptions = ''
-    auto-optimise-store = true
     experimental-features = nix-command flakes
   '' + lib.optionalString (pkgs.system == "aarch64-darwin") ''
     extra-platforms = x86_64-darwin aarch64-darwin
@@ -246,7 +252,7 @@ nix.gc = {
     services.skhd = {
       enable =true;
       skhdConfig = ''
-        ctrl - return : open -na kitty --args -c /Users/romanbartusiak/.config/kitty/kitty.conf -T term /Users/romanbartusiak
+        ctrl - return : open -na /Applications/kitty.app --args -c /Users/romanbartusiak/.config/kitty/kitty.conf -T term /Users/romanbartusiak
 
         ctrl - b : yabai -m space --layout bsp
         ctrl - s : yabai -m space --layout stack
@@ -290,11 +296,23 @@ nix.gc = {
 
     }; 
 
+    launchd.daemons.nix-optimize = {
+      serviceConfig.ProgramArguments = [ "${pkgs.nix}/bin/nix" "store" "optimise" ];
+      serviceConfig.StartCalendarInterval=[{ Hour = 17; }];
+      serviceConfig.StandardOutPath = "/tmp/nix-optimize.log";
+      serviceConfig.StandardErrorPath = "/tmp/nix-optimize.log";
+    };
+
     environment.systemPackages = with pkgs; [
       skhd
       sketchybar
       jq 
     ];
+
+    # add environment variables
+    environment.variables = {
+       HOMEBREW_UPGRADE_GREEDY = "true";
+    };
 
     
 }

@@ -30,9 +30,13 @@
       url = "github:homebrew/homebrew-bundle";
       flake = false;
     };
+    homebrew-bufbuild ={
+      url = "github:bufbuild/homebrew-buf";
+      flake = false;
+    };
   };
 
-  outputs = { self, darwin, nixpkgs, home-manager, nix-homebrew, homebrew-core, homebrew-cask, homebrew-bundle, nix-vscode-extensions, ... }@inputs:
+  outputs = { self, darwin, nixpkgs, home-manager, nix-homebrew, homebrew-core, homebrew-cask, homebrew-bundle, homebrew-bufbuild, nix-vscode-extensions, ... }@inputs:
   let 
 
     inherit (darwin.lib) darwinSystem;
@@ -82,9 +86,10 @@
       user = "romanbartusiak";
 
       taps = {
-        "homebrew/homebrew-core" = homebrew-core;
-        "homebrew/homebrew-cask" = homebrew-cask;
-        "homebrew/homebrew-bundle" = homebrew-bundle;
+        "homebrew/homebrew-core" = inputs.homebrew-core;
+        "homebrew/homebrew-cask" = inputs.homebrew-cask;
+        "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
+        "bufbuild/homebrew-buf" = inputs.homebrew-bufbuild;
       };
 
       mutableTaps = false;

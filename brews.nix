@@ -1,4 +1,6 @@
 _:
 
 [
+
+    "bufbuild/buf/buf"
 ]
