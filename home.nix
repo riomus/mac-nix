@@ -1,6 +1,7 @@
 flakes: { config, pkgs, lib, ... }:
 let
 vscode-extensions = flakes.nix-vscode-extensions.extensions.aarch64-darwin;
+  additionalJDKs = with pkgs; [ temurin-bin-21 temurin-bin-17 ];
 in
 {
   home.stateVersion = "24.05";
@@ -67,11 +68,17 @@ in
       plugins = [ "git" "sudo" "docker" "kubectl" "aws"];
     };
     shellAliases = {
-      nixu = "nix  --extra-experimental-features nix-command --extra-experimental-features  flakes run nix-darwin -- switch --flake ~/.config/nix --fallback";
+      nixu = "nix flake update --flake ~/.config/nix && nix  --extra-experimental-features nix-command --extra-experimental-features  flakes run nix-darwin -- switch --flake ~/.config/nix --fallback";
       cat = "bat";
       ls = "exa";
     };
+    initExtra = ''
+      export PYENV_ROOT="$HOME/.pyenv"
+      [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+      eval "$(pyenv init -)"
+    '';
   };
+  programs.pyenv.enable=true;
   programs.kitty = {
     enable = true;
     settings = {
@@ -94,7 +101,7 @@ in
   };
   programs.navi.enable =true;
   home.packages = with pkgs; [
-    # Some basics
+    # Some basisc
     awscli
     coreutils
     curl
@@ -104,18 +111,18 @@ in
     bat
     eza
     duf
-    openjdk17
+    openjdk21
     mtr
-    python310
+    python312
     wrk
     spotify
     gitAndTools.gh
     hyperfine
     neofetch
     asitop
-    poetry
+    netcat
+    jq
     postgresql
-    
     discord
     telegram-desktop
     jankyborders
@@ -129,23 +136,32 @@ in
   (import ./sketchybar-app-font.nix {inherit pkgs;})
   ];
 
-  home.file.".config/starship.toml" = {
+  home.sessionPath = [
+    "/Users/romanbartusiak/Library/Python/3.9/bin"
+    "/Users/romanbartusiak/.local/bin"
+  ];
+  home.sessionVariables = {
+    EDITOR= "vim";
+  };
+
+
+
+    home.file = lib.mkMerge[
+      {
+
+
+  ".config/starship.toml" = {
     source = ./starship.toml;
   };
-  home.file."Pictures/Backgrounds/1.jpg" = {
+  "Pictures/Backgrounds/1.jpg" = {
     source = ./bg.jpg;
   };
-  home.file.".config/sketchybar" = {
+  ".config/sketchybar" = {
     source = ./sketchybar;
     recursive = true;
   };
-  home.sessionPath = [
-    "/Users/romanbartusiak/Library/Python/3.9/bin"
-  ];
 
-  # Misc configuration files --------------------------------------------------------------------{{{
-
-  home.file."Library/Application\ Support/discord/settings.json".text = ''
+  "Library/Application\ Support/discord/settings.json".text = ''
   {
 
     "MIN_WIDTH":0,
@@ -154,11 +170,14 @@ in
   }
   '';
 
-  home.file.".hushlogin".text = ''
+  ".hushlogin".text = ''
   '';
-
-  home.sessionVariables = {
-    EDITOR= "vim";
-  };
+      }
+    (builtins.listToAttrs (builtins.map (jdk: {
+    name = ".jdks/${jdk.version}";
+    value = { source = jdk; };
+  }) additionalJDKs))
+    ];
+    
      
 }

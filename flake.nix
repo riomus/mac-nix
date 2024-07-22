@@ -3,13 +3,13 @@
 
   inputs = {
     # Package sets
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-24.05-darwin";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-24.11-darwin";
     nixpkgs-unstable.url = github:NixOS/nixpkgs/nixpkgs-unstable;
 
     # Environment/system management
-    darwin.url = "github:lnl7/nix-darwin/master";
+    darwin.url = "github:lnl7/nix-darwin/nix-darwin-24.11";
     darwin.inputs.nixpkgs.follows = "nixpkgs";
-    home-manager.url = "github:nix-community/home-manager/release-24.05";
+    home-manager.url = "github:nix-community/home-manager/release-24.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     # Other sources
@@ -30,9 +30,21 @@
       url = "github:homebrew/homebrew-bundle";
       flake = false;
     };
+    homebrew-bufbuild ={
+      url = "github:bufbuild/homebrew-buf";
+      flake = false;
+    };
+    homebrew-cocroach ={
+      url = "github:cockroachdb/homebrew-tap";
+      flake = false;
+    };
+    homebrew-hashicorp ={
+      url = "github:hashicorp/homebrew-tap";
+      flake = false;
+    };
   };
 
-  outputs = { self, darwin, nixpkgs, home-manager, nix-homebrew, homebrew-core, homebrew-cask, homebrew-bundle, nix-vscode-extensions, ... }@inputs:
+  outputs = { self, darwin, nixpkgs, home-manager, nix-homebrew, homebrew-core, homebrew-cask, homebrew-bundle, homebrew-bufbuild, homebrew-cocroach, homebrew-hashicorp , nix-vscode-extensions, ... }@inputs:
   let 
 
     inherit (darwin.lib) darwinSystem;
@@ -82,9 +94,12 @@
       user = "romanbartusiak";
 
       taps = {
-        "homebrew/homebrew-core" = homebrew-core;
-        "homebrew/homebrew-cask" = homebrew-cask;
-        "homebrew/homebrew-bundle" = homebrew-bundle;
+        "homebrew/homebrew-core" = inputs.homebrew-core;
+        "homebrew/homebrew-cask" = inputs.homebrew-cask;
+        "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
+        "bufbuild/homebrew-buf" = inputs.homebrew-bufbuild;
+        "cockroachdb/homebrew-cockroach" = inputs.homebrew-cocroach;
+        "hashicorp/homebrew-hashicorp" = inputs.homebrew-hashicorp;
       };
 
       mutableTaps = false;
