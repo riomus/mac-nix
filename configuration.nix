@@ -308,6 +308,7 @@ nix.gc = {
       sketchybar
       jq 
       pipx
+      darwin.xcode
     ];
 
     # add environment variables

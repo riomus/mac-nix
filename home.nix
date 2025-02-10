@@ -50,6 +50,10 @@ in
       pf = "!git push --force";
       amdpf = "!git amd && git pf";
     };
+    signing ={
+      key = "74B453A6F84167C0";
+      signByDefault = true;
+    };
   };
 
   programs.starship = {
@@ -109,6 +113,8 @@ in
     btop
     slack
     bat
+    buf
+    gnupg
     eza
     duf
     openjdk21
