@@ -4,6 +4,7 @@ vscode-extensions = flakes.nix-vscode-extensions.extensions.aarch64-darwin;
   additionalJDKs = with pkgs; [ temurin-bin-21 temurin-bin-17 ];
 in
 {
+
   home.stateVersion = "24.05";
   home.enableNixpkgsReleaseCheck = true;
 
@@ -27,7 +28,6 @@ in
       dracula-theme.theme-dracula
     ]) ++ (with vscode-extensions.vscode-marketplace; [
       jnoortheen.nix-ide
-      github.copilot
       kamikillerto.vscode-colorize
       tamasfe.even-better-toml
     ]);

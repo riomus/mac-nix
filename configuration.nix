@@ -35,6 +35,9 @@ nix.gc = {
     "@admin"
   ];
   nix.configureBuildUsers = true;
+  nixpkgs.config={
+        allowUnfree = true;
+  };
   users.users.romanbartusiak.home= "/Users/romanbartusiak";
 
   # Enable experimental nix command and flakes
@@ -308,7 +311,6 @@ nix.gc = {
       sketchybar
       jq 
       pipx
-      darwin.xcode
     ];
 
     # add environment variables
