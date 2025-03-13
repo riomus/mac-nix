@@ -106,7 +106,7 @@ in
   programs.navi.enable =true;
   home.packages = with pkgs; [
     # Some basisc
-    awscli
+    awscli2
     coreutils
     curl
     wget
