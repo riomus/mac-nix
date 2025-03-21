@@ -26,10 +26,6 @@
       url = "github:homebrew/homebrew-cask";
       flake = false;
     };
-    homebrew-bundle = {
-      url = "github:homebrew/homebrew-bundle";
-      flake = false;
-    };
     homebrew-bufbuild ={
       url = "github:bufbuild/homebrew-buf";
       flake = false;
@@ -44,7 +40,7 @@
     };
   };
 
-  outputs = { self, darwin, nixpkgs, home-manager, nix-homebrew, homebrew-core, homebrew-cask, homebrew-bundle, homebrew-bufbuild, homebrew-cocroach, homebrew-hashicorp , nix-vscode-extensions, ... }@inputs:
+  outputs = { self, darwin, nixpkgs, home-manager, nix-homebrew, homebrew-core, homebrew-cask, homebrew-bufbuild, homebrew-cocroach, homebrew-hashicorp , nix-vscode-extensions, ... }@inputs:
   let 
 
     inherit (darwin.lib) darwinSystem;
@@ -99,7 +95,6 @@
       taps = {
         "homebrew/homebrew-core" = inputs.homebrew-core;
         "homebrew/homebrew-cask" = inputs.homebrew-cask;
-        "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
         "bufbuild/homebrew-buf" = inputs.homebrew-bufbuild;
         "cockroachdb/homebrew-cockroach" = inputs.homebrew-cocroach;
         "hashicorp/homebrew-hashicorp" = inputs.homebrew-hashicorp;
