@@ -17,4 +17,5 @@ _:
     {name = "bambu-studio"; greedy = true;}
     {name = "kitty"; greedy = true;}
     {name = "chatgpt"; greedy = true;}
+    {name = "orcaslicer"; greedy = true;}
 ]
