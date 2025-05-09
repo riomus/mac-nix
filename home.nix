@@ -51,7 +51,7 @@ in
       amdpf = "!git amd && git pf";
     };
     signing ={
-      key = "74B453A6F84167C0";
+      key = "8BE7383653110620";
       signByDefault = true;
     };
   };
