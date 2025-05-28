@@ -15,7 +15,6 @@ in
   # https://rycee.gitlab.io/home-manager/options.html#opt-programs.direnv.enable
   programs.direnv.enable = true;
   programs.direnv.nix-direnv.enable = true;
-  home-manager.backupFileExtension="backup";
   # Htop
   # https://rycee.gitlab.io/home-manager/options.html#opt-programs.htop.enable
   programs.htop.enable = true;
@@ -86,6 +85,8 @@ in
       export PYENV_ROOT="$HOME/.pyenv"
       [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
       eval "$(pyenv init -)"
+      bindkey '«' zsh_gh_copilot_suggest
+      bindkey '»' zsh_gh_copilot_explain
     '';
   };
   

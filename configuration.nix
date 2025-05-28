@@ -315,6 +315,7 @@ nix.gc = {
     environment.variables = {
        HOMEBREW_UPGRADE_GREEDY = "true";
     };
+  home-manager.backupFileExtension="backup";
 
     
 }
