@@ -34,7 +34,6 @@ nix.gc = {
   nix.settings.trusted-users = [
     "@admin"
   ];
-  nix.configureBuildUsers = true;
   nixpkgs.config={
         allowUnfree = true;
   };
@@ -51,8 +50,6 @@ nix.gc = {
   # Create /etc/bashrc that loads the nix-darwin environment.
   programs.zsh.enable = true;
 
-  # Auto upgrade nix package and the daemon service.
-  services.nix-daemon.enable = true;
 
 
 
@@ -62,7 +59,10 @@ nix.gc = {
   # Fonts
   fonts.packages = with pkgs; [
       recursive
-      (nerdfonts.override { fonts = [ "JetBrainsMono" "FiraCode" "DroidSansMono" "SourceCodePro"]; })
+      nerd-fonts.jetbrains-mono
+      nerd-fonts.fira-code
+      nerd-fonts.droid-sans-mono
+      nerd-fonts.sauce-code-pro
       source-code-pro
       noto-fonts
       noto-fonts-cjk-sans
@@ -79,15 +79,13 @@ nix.gc = {
   system.keyboard.remapCapsLockToEscape = true;
 
   # Add ability to used TouchID for sudo authentication
-  security.pam.enableSudoTouchIdAuth = true;
+  security.pam.services.sudo_local.touchIdAuth = true;
 
 
   #boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
   system = {
-      activationScripts.postUserActivation.text = ''
-    # Following line should allow us to avoid a logout/login cycle
-    /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
-  '';
+    primaryUser = "romanbartusiak";
+
     activationScripts.postActivation.text = ''
       ###############################################################################
       # General UI/UX                                                               #

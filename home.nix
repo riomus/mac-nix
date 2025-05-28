@@ -15,7 +15,7 @@ in
   # https://rycee.gitlab.io/home-manager/options.html#opt-programs.direnv.enable
   programs.direnv.enable = true;
   programs.direnv.nix-direnv.enable = true;
-
+  home-manager.backupFileExtension="backup";
   # Htop
   # https://rycee.gitlab.io/home-manager/options.html#opt-programs.htop.enable
   programs.htop.enable = true;
@@ -24,7 +24,7 @@ in
   programs.vscode = {
   enable = true;
   mutableExtensionsDir = false;
-  extensions = (with pkgs.vscode-extensions; [
+  profiles.default.extensions = (with pkgs.vscode-extensions; [
       dracula-theme.theme-dracula
     ]) ++ (with vscode-extensions.vscode-marketplace; [
       jnoortheen.nix-ide
@@ -67,27 +67,28 @@ in
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
     zplug = {
-    enable = true;
-    plugins = [
-        { name = "loiccoyle/zsh-github-copilot"; } 
-      ];
-    };
-    oh-my-zsh = {
-      theme = "robbyrussell";
       enable = true;
+      plugins = [
+          { name = "loiccoyle/zsh-github-copilot"; } 
+        ];
+      };
+    oh-my-zsh = {
+      enable = true;
+      theme = "robbyrussell";
       plugins = [ "git" "sudo" "docker" "kubectl" "aws"];
     };
     shellAliases = {
-      nixu = "nix flake update --flake ~/.config/nix && sudo nix  --extra-experimental-features nix-command --extra-experimental-features  flakes run nix-darwin -- switch --flake ~/.config/nix --fallback";
-      cat = "bat";
       ls = "exa";
+      nixu = "nix flake update --flake ~/.config/nix && sudo  nix run nix-darwin -- switch --flake  ~/.config/nix";
+      cat = "bat";
     };
-    initExtra = ''
+    initContent = ''
       export PYENV_ROOT="$HOME/.pyenv"
       [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
       eval "$(pyenv init -)"
     '';
   };
+  
   programs.pyenv.enable=true;
   programs.kitty = {
     enable = true;
