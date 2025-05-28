@@ -66,6 +66,12 @@ in
     enableCompletion = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
+    zplug = {
+    enable = true;
+    plugins = [
+        { name = "loiccoyle/zsh-github-copilot"; } 
+      ];
+    };
     oh-my-zsh = {
       theme = "robbyrussell";
       enable = true;
