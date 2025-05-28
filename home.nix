@@ -23,13 +23,7 @@ in
   programs.vscode = {
   enable = true;
   mutableExtensionsDir = true;
-  profiles.default.extensions = (with pkgs.vscode-extensions; [
-      dracula-theme.theme-dracula
-    ]) ++ (with vscode-extensions.vscode-marketplace; [
-      jnoortheen.nix-ide
-      kamikillerto.vscode-colorize
-      tamasfe.even-better-toml
-    ]);
+
   };
 
   programs.fzf = {
