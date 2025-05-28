@@ -6,4 +6,5 @@ _:
     "cockroachdb/cockroach/cockroach"
     "hashicorp/hashicorp/vault"
     "gh"
+    "zsh-completions"
 ]

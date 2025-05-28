@@ -18,5 +18,4 @@ _:
     {name = "kitty"; greedy = true;}
     {name = "chatgpt"; greedy = true;}
     {name = "orcaslicer"; greedy = true;}
-    {name = "zsh-completions"; greedy = true;}
 ]
