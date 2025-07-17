@@ -281,9 +281,13 @@ nix.gc = {
         ctrl + shift -up: yabai -m window --warp north
 
 
+
         ctrl + shift -down: yabai -m window --warp south
 
         ctrl - q : yabai -m window --close
+
+        ctrl + shift - q : launchctl kickstart -k "gui/501/org.nixos.yabai"
+
       '';
     };
 
