@@ -44,6 +44,7 @@ in
        url."ssh://git@github.com/".insteadOf="https://github.com/";
        push.default="current";
     };
+    lfs.enable = true;
     aliases = {
       amd = "!git add . && git commit --amend --no-edit";
       pf = "!git push --force";
