@@ -212,80 +212,26 @@
     };
   };
 
-  services.yabai = {
-    enable = true;
-    config = {
-      focus_follows_mouse          = "autoraise";
-      mouse_follows_focus          = "off";
-      window_placement             = "second_child";
-      window_shadow                = "none";
-      split_ratio                  = "0.50";
-      auto_balance                 = "off";
-      mouse_modifier               = "ctrl";
-      mouse_action1                = "move";
-      mouse_action2                = "resize";
-      layout                       = "bsp";
-      top_padding                  = 10;
-      bottom_padding               = 10;
-      left_padding                 = 10;
-      right_padding                = 10;
-      window_gap                   = 10;
-      external_bar = "all:35:0";
+  launchd.user.agents.yabai = {
+    serviceConfig.ProgramArguments = [ "/opt/homebrew/bin/yabai" ];
+    serviceConfig.KeepAlive = true;
+    serviceConfig.RunAtLoad = true;
+    serviceConfig.StandardOutPath = "/tmp/yabai.log";
+    serviceConfig.StandardErrorPath = "/tmp/yabai.log";
+    serviceConfig.EnvironmentVariables = {
+      PATH = "/opt/homebrew/bin:$PATH";
     };
-
-    extraConfig = ''
-      # rules
-      yabai -m rule --add app="^(Telegram)$" space=3;
-      yabai -m rule --add app='Ustawienia systemowe' manage=off;
-      apps="^(IntelliJ IDEA|WebStorm|RubyMine|PyCharm|DataGrip)$";
-      yabai -m rule --add app="^(Spotify)$" space=8;
-      yabai -m rule --add app="^(Slack)$" space=10;
-      yabai -m rule --add app="^(Discord)$" space=10;
-      yabai -m rule --add app="^(Messanger)$" space=9;
-      yabai -m rule --add app="^(WhatsApp)$" space=9;
-
-      yabai -m signal --add event=window_focused action="sketchybar --trigger window_focus"
-      yabai -m signal --add event=window_created action="sketchybar --trigger windows_on_spaces"
-      yabai -m signal --add event=window_destroyed action="sketchybar --trigger windows_on_spaces"
-    '';
   };
 
-  services.skhd = {
-    enable = true;
-    skhdConfig = ''
-      ctrl - return : open -na /Applications/kitty.app --args -c /Users/romanbartusiak/.config/kitty/kitty.conf -T term /Users/romanbartusiak
-
-      ctrl - b : yabai -m space --layout bsp
-      ctrl - s : yabai -m space --layout stack
-
-      ctrl - down : yabai -m window --focus stack.next || yabai -m window --focus south
-      ctrl - up : yabai -m window --focus stack.prev || yabai -m window --focus north
-      ctrl  - left : yabai -m window --focus west
-      ctrl  - right : yabai -m window --focus east
-
-      ctrl + shift - 1 : yabai -m window --space 1
-      ctrl + shift - 2 : yabai -m window --space 2
-      ctrl + shift - 3 : yabai -m window --space 3
-      ctrl + shift - 4 : yabai -m window --space 4
-      ctrl + shift - 5 : yabai -m window --space 5
-      ctrl + shift - 6 : yabai -m window --space 6
-      ctrl + shift - 7 : yabai -m window --space 7
-      ctrl + shift - 8 : yabai -m window --space 8
-      ctrl + shift - 9 : yabai -m window --space 9
-
-
-      ctrl - f : yabai -m window --toggle zoom-fullscreen
-
-      ctrl + shift -right: yabai -m window --warp east
-      ctrl + shift -left: yabai -m window --warp west
-      ctrl + shift -up: yabai -m window --warp north
-
-      ctrl + shift -down: yabai -m window --warp south
-
-      ctrl - q : yabai -m window --close
-
-      ctrl + shift - q : launchctl kickstart -k "gui/501/org.nixos.yabai"
-    '';
+  launchd.user.agents.skhd = {
+    serviceConfig.ProgramArguments = [ "/opt/homebrew/bin/skhd" ];
+    serviceConfig.KeepAlive = true;
+    serviceConfig.RunAtLoad = true;
+    serviceConfig.StandardOutPath = "/tmp/skhd.log";
+    serviceConfig.StandardErrorPath = "/tmp/skhd.log";
+    serviceConfig.EnvironmentVariables = {
+      PATH = "/opt/homebrew/bin:$PATH";
+    };
   };
 
   launchd.user.agents.sketchybar = {
@@ -313,7 +259,6 @@
   };
 
   environment.systemPackages = with pkgs; [
-    skhd
     jq
     pipx
   ];
