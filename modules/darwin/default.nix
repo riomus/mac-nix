@@ -287,6 +287,8 @@
       "bufbuild/homebrew-buf" = inputs.homebrew-bufbuild;
       "cockroachdb/homebrew-cockroach" = inputs.homebrew-cocroach;
       "hashicorp/homebrew-hashicorp" = inputs.homebrew-hashicorp;
+      "FelixKratz/formulae" = inputs.homebrew-felixkratz;
+      "koekeishiya/formulae" = inputs.homebrew-koekeishiya;
     };
   };
 }

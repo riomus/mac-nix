@@ -44,6 +44,14 @@
       url = "github:hashicorp/homebrew-tap";
       flake = false;
     };
+    homebrew-felixkratz = {
+      url = "github:FelixKratz/homebrew-formulae";
+      flake = false;
+    };
+    homebrew-koekeishiya = {
+      url = "github:koekeishiya/homebrew-formulae";
+      flake = false;
+    };
   };
 
   outputs = { self, darwin, nixpkgs, home-manager, ... }@inputs:
