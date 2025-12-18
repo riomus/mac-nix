@@ -7,4 +7,6 @@ _:
     "gh"
     "zsh-completions"
     "sketchybar"
+    "yabai"
+    "skhd"
 ]

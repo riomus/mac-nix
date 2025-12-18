@@ -18,7 +18,7 @@ in
   # https://rycee.gitlab.io/home-manager/options.html#opt-programs.htop.enable
   programs.htop.enable = true;
   programs.htop.settings.show_program_path = true;
-  
+
   programs.vscode = {
     enable = true;
     mutableExtensionsDir = true;
@@ -58,7 +58,7 @@ in
   programs.starship = {
     enable = true;
   };
-  
+
   programs.zsh = {
     enable = true;
 
@@ -68,7 +68,7 @@ in
     zplug = {
       enable = true;
       plugins = [
-          { name = "loiccoyle/zsh-github-copilot"; } 
+          { name = "loiccoyle/zsh-github-copilot"; }
         ];
       };
     oh-my-zsh = {
@@ -89,7 +89,7 @@ in
       bindkey '»' zsh_gh_copilot_explain
     '';
   };
-  
+
   programs.pyenv.enable = true;
   programs.kitty = {
     enable = true;
@@ -158,6 +158,82 @@ in
   home.sessionVariables = {
     EDITOR = "vim";
   };
+
+  # Yabai configuration
+  xdg.configFile."yabai/yabairc" = {
+    executable = true;
+    text = ''
+      #!/usr/bin/env sh
+
+      # config
+      yabai -m config focus_follows_mouse autoraise
+      yabai -m config mouse_follows_focus off
+      yabai -m config window_placement second_child
+      yabai -m config window_shadow none
+      yabai -m config split_ratio 0.50
+      yabai -m config auto_balance off
+      yabai -m config mouse_modifier ctrl
+      yabai -m config mouse_action1 move
+      yabai -m config mouse_action2 resize
+      yabai -m config layout bsp
+      yabai -m config top_padding 10
+      yabai -m config bottom_padding 10
+      yabai -m config left_padding 10
+      yabai -m config right_padding 10
+      yabai -m config window_gap 10
+      yabai -m config external_bar all:35:0
+
+      # rules
+      yabai -m rule --add app="^(Telegram)$" space=3;
+      yabai -m rule --add app='Ustawienia systemowe' manage=off;
+      apps="^(IntelliJ IDEA|WebStorm|RubyMine|PyCharm|DataGrip)$";
+      yabai -m rule --add app="^(Spotify)$" space=8;
+      yabai -m rule --add app="^(Slack)$" space=10;
+      yabai -m rule --add app="^(Discord)$" space=10;
+      yabai -m rule --add app="^(Messanger)$" space=9;
+      yabai -m rule --add app="^(WhatsApp)$" space=9;
+
+      yabai -m signal --add event=window_focused action="sketchybar --trigger window_focus"
+      yabai -m signal --add event=window_created action="sketchybar --trigger windows_on_spaces"
+      yabai -m signal --add event=window_destroyed action="sketchybar --trigger windows_on_spaces"
+    '';
+  };
+
+  # skhd configuration
+  xdg.configFile."skhd/skhdrc".text = ''
+    ctrl - return : open -na /Applications/kitty.app --args -c /Users/romanbartusiak/.config/kitty/kitty.conf -T term /Users/romanbartusiak
+
+    ctrl - b : yabai -m space --layout bsp
+    ctrl - s : yabai -m space --layout stack
+
+    ctrl - down : yabai -m window --focus stack.next || yabai -m window --focus south
+    ctrl - up : yabai -m window --focus stack.prev || yabai -m window --focus north
+    ctrl  - left : yabai -m window --focus west
+    ctrl  - right : yabai -m window --focus east
+
+    ctrl + shift - 1 : yabai -m window --space 1
+    ctrl + shift - 2 : yabai -m window --space 2
+    ctrl + shift - 3 : yabai -m window --space 3
+    ctrl + shift - 4 : yabai -m window --space 4
+    ctrl + shift - 5 : yabai -m window --space 5
+    ctrl + shift - 6 : yabai -m window --space 6
+    ctrl + shift - 7 : yabai -m window --space 7
+    ctrl + shift - 8 : yabai -m window --space 8
+    ctrl + shift - 9 : yabai -m window --space 9
+
+
+    ctrl - f : yabai -m window --toggle zoom-fullscreen
+
+    ctrl + shift -right: yabai -m window --warp east
+    ctrl + shift -left: yabai -m window --warp west
+    ctrl + shift -up: yabai -m window --warp north
+
+    ctrl + shift -down: yabai -m window --warp south
+
+    ctrl - q : yabai -m window --close
+
+    ctrl + shift - q : launchctl kickstart -k "gui/501/org.nixos.yabai"
+  '';
 
   home.file = lib.mkMerge [
     {
