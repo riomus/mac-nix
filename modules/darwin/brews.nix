@@ -6,7 +6,7 @@ _:
     "hashicorp/hashicorp/vault"
     "gh"
     "zsh-completions"
-    "FelixKratz/formulae/sketchybar"
+    "felixkratz/formulae/sketchybar"
     "koekeishiya/formulae/yabai"
     "koekeishiya/formulae/skhd"
 ]
