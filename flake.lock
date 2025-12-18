@@ -155,6 +155,22 @@
         "type": "github"
       }
     },
+    "homebrew-felixkratz": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1762104534,
+        "narHash": "sha256-w9yG/ro4TtL84sTDAqcWEgc2JQpm4vRKlCHa5U8U67c=",
+        "owner": "FelixKratz",
+        "repo": "homebrew-formulae",
+        "rev": "b97877f8ef98e47a3e81eb366bf8dfc0cd7289d7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "FelixKratz",
+        "repo": "homebrew-formulae",
+        "type": "github"
+      }
+    },
     "homebrew-hashicorp": {
       "flake": false,
       "locked": {
@@ -171,6 +187,22 @@
         "type": "github"
       }
     },
+    "homebrew-koekeishiya": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1765321528,
+        "narHash": "sha256-qkvyLtfo1DQv3BJ2aN2QpXM5rsY42jjsdmfF+NCppdw=",
+        "owner": "koekeishiya",
+        "repo": "homebrew-formulae",
+        "rev": "4304ae8d0dd1e3d138d2e2dafb06d77965891b98",
+        "type": "github"
+      },
+      "original": {
+        "owner": "koekeishiya",
+        "repo": "homebrew-formulae",
+        "type": "github"
+      }
+    },
     "nix-homebrew": {
       "inputs": {
         "brew-src": "brew-src"
@@ -178,15 +210,15 @@
       "locked": {
         "lastModified": 1764473698,
         "narHash": "sha256-C91gPgv6udN5WuIZWNehp8qdLqlrzX6iF/YyboOj6XI=",
-        "ref": "refs/heads/main",
+        "owner": "zhaofengli",
+        "repo": "nix-homebrew",
         "rev": "6a8ab60bfd66154feeaa1021fc3b32684814a62a",
-        "revCount": 113,
-        "type": "git",
-        "url": "https://github.com/zhaofengli/nix-homebrew"
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "https://github.com/zhaofengli/nix-homebrew"
+        "owner": "zhaofengli",
+        "repo": "nix-homebrew",
+        "type": "github"
       }
     },
     "nix-vscode-extensions": {
@@ -265,7 +297,9 @@
         "homebrew-cask": "homebrew-cask",
         "homebrew-cocroach": "homebrew-cocroach",
         "homebrew-core": "homebrew-core",
+        "homebrew-felixkratz": "homebrew-felixkratz",
         "homebrew-hashicorp": "homebrew-hashicorp",
+        "homebrew-koekeishiya": "homebrew-koekeishiya",
         "nix-homebrew": "nix-homebrew",
         "nix-vscode-extensions": "nix-vscode-extensions",
         "nixpkgs": "nixpkgs_2",
