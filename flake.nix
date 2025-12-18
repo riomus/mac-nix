@@ -4,19 +4,21 @@
   inputs = {
     # Package sets
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-25.05-darwin";
-    nixpkgs-unstable.url = github:NixOS/nixpkgs/nixpkgs-unstable;
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
     # Environment/system management
     darwin.url = "github:lnl7/nix-darwin/nix-darwin-25.05";
     darwin.inputs.nixpkgs.follows = "nixpkgs";
+
     home-manager.url = "github:nix-community/home-manager/release-25.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     # Other sources
-    comma = { url = github:Shopify/comma; flake = false; };
+    comma = { url = "github:Shopify/comma"; flake = false; };
     
-    nix-homebrew.url = "git+https://github.com/zhaofengli/nix-homebrew";
+    nix-homebrew.url = "github:zhaofengli/nix-homebrew";
     nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
+
     # Optional: Declarative tap management
     homebrew-core = {
       url = "github:homebrew/homebrew-core";
@@ -44,92 +46,28 @@
     };
   };
 
-  outputs = { self, darwin, nixpkgs, home-manager, nix-homebrew, homebrew-core, homebrew-cask, homebrew-bundle, homebrew-bufbuild, homebrew-cocroach, homebrew-hashicorp , nix-vscode-extensions, ... }@inputs:
+  outputs = { self, darwin, nixpkgs, home-manager, ... }@inputs:
   let 
-
     inherit (darwin.lib) darwinSystem;
-    inherit (inputs.nixpkgs-unstable.lib) attrValues makeOverridable optionalAttrs singleton;
-
-    # Configuration for `nixpkgs`
-    nixpkgsConfig = {
-      config = { 
-        allowUnfree = true; 
-      };
-      overlays = attrValues self.overlays ++ singleton (
-        # Sub in x86 version of packages that don't build on Apple Silicon yet
-        final: prev: (optionalAttrs (prev.stdenv.system == "aarch64-darwin") {
-          inherit (final.pkgs-x86)
-            idris2
-            niv
-            purescript;
-        })
-      );
-    }; 
+    overlays = import ./overlays { inherit inputs; };
   in
   {
-    # My `nix-darwin` configs
-      
-    darwinConfigurations = rec {
-     Romans-MacBook-Pro = darwinSystem {
-        system = "aarch64-darwin";
-
-        modules =  [ 
-          # Main `nix-darwin` config
-          ./configuration.nix
-          # `home-manager` module
-          home-manager.darwinModules.home-manager
-          {
-            nixpkgs = nixpkgsConfig;
-            # `home-manager` config
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.romanbartusiak = import ./home.nix{ nix-vscode-extensions = nix-vscode-extensions;};            
-          }
-
-          #homebrew module
-            nix-homebrew.darwinModules.nix-homebrew
-  {
-    nix-homebrew = {
-      enable = true;
-
-      enableRosetta = true;
-
-      user = "romanbartusiak";
-
-      taps = {
-        "homebrew/homebrew-core" = inputs.homebrew-core;
-        "homebrew/homebrew-cask" = inputs.homebrew-cask;
-        "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
-        "bufbuild/homebrew-buf" = inputs.homebrew-bufbuild;
-        "cockroachdb/homebrew-cockroach" = inputs.homebrew-cocroach;
-        "hashicorp/homebrew-hashicorp" = inputs.homebrew-hashicorp;
-      };
-
-      mutableTaps = false;
-    };
-  }
-        ];
-
-      };
+    darwinConfigurations."Romans-MacBook-Pro" = darwinSystem {
+      system = "aarch64-darwin";
+      specialArgs = { inherit inputs; };
+      modules = [
+        ./modules/darwin/default.nix
+        home-manager.darwinModules.home-manager
+        {
+          nixpkgs.overlays = [
+            overlays.comma
+            overlays.apple-silicon
+            overlays.modifications
+          ];
+        }
+      ];
     };
 
-    # Overlays --------------------------------------------------------------- {{{
-
-    overlays = {
-      # Overlays to add various packages into package set
-        comma = final: prev: {
-          comma = import inputs.comma { inherit (prev) pkgs; };
-        };  
-
-      # Overlay useful on Macs with Apple Silicon
-        apple-silicon = final: prev: optionalAttrs (prev.stdenv.system == "aarch64-darwin") {
-          # Add access to x86 packages system is running Apple Silicon
-          pkgs-x86 = import inputs.nixpkgs-unstable {
-            system = "x86_64-darwin";
-            inherit (nixpkgsConfig) config;
-          };
-        }; 
-      };
-
-    };
+    formatter.aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.nixpkgs-fmt;
+  };
 }

@@ -1,10 +1,9 @@
-flakes: { config, pkgs, lib, ... }:
+{ pkgs, lib, inputs, ... }:
 let
-vscode-extensions = flakes.nix-vscode-extensions.extensions.aarch64-darwin;
+  vscode-extensions = inputs.nix-vscode-extensions.extensions.aarch64-darwin;
   additionalJDKs = with pkgs; [ temurin-bin-21 temurin-bin-17 ];
 in
 {
-
   home.stateVersion = "24.05";
   home.enableNixpkgsReleaseCheck = true;
 
@@ -21,15 +20,15 @@ in
   programs.htop.settings.show_program_path = true;
   
   programs.vscode = {
-  enable = true;
-  mutableExtensionsDir = true;
-  profiles.default.extensions = (with pkgs.vscode-extensions; [
-      dracula-theme.theme-dracula
-    ]) ++ (with vscode-extensions.vscode-marketplace; [
-      jnoortheen.nix-ide
-      kamikillerto.vscode-colorize
-      tamasfe.even-better-toml
-    ]);
+    enable = true;
+    mutableExtensionsDir = true;
+    profiles.default.extensions = (with pkgs.vscode-extensions; [
+        dracula-theme.theme-dracula
+      ]) ++ (with vscode-extensions.vscode-marketplace; [
+        jnoortheen.nix-ide
+        kamikillerto.vscode-colorize
+        tamasfe.even-better-toml
+      ]);
   };
 
   programs.fzf = {
@@ -41,8 +40,8 @@ in
     userName = "Roman Bartusiak";
     userEmail = "roman.bartusiak@yohana.com";
     extraConfig = {
-       url."ssh://git@github.com/".insteadOf="https://github.com/";
-       push.default="current";
+       url."ssh://git@github.com/".insteadOf = "https://github.com/";
+       push.default = "current";
     };
     lfs.enable = true;
     aliases = {
@@ -50,7 +49,7 @@ in
       pf = "!git push --force";
       amdpf = "!git amd && git pf";
     };
-    signing ={
+    signing = {
       key = "8BE7383653110620";
       signByDefault = true;
     };
@@ -60,7 +59,7 @@ in
     enable = true;
   };
   
-  programs.zsh= {
+  programs.zsh = {
     enable = true;
 
     enableCompletion = true;
@@ -82,7 +81,7 @@ in
       nixu = "nix flake update --flake ~/.config/nix && sudo  nix run nix-darwin -- switch --flake  ~/.config/nix";
       cat = "bat";
     };
-    initContent = ''
+    initExtra = ''
       export PYENV_ROOT="$HOME/.pyenv"
       [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
       eval "$(pyenv init -)"
@@ -91,7 +90,7 @@ in
     '';
   };
   
-  programs.pyenv.enable=true;
+  programs.pyenv.enable = true;
   programs.kitty = {
     enable = true;
     settings = {
@@ -112,9 +111,10 @@ in
       copy_on_select = true;
     };
   };
-  programs.navi.enable =true;
+  programs.navi.enable = true;
+
   home.packages = with pkgs; [
-    # Some basisc
+    # Some basics
     awscli2
     coreutils
     curl
@@ -145,10 +145,10 @@ in
     cocoapods
     m-cli # useful macOS CLI commands
   ] ++ [
-  (import ./raycast.nix {inherit pkgs;})
-  (import ./jetbrains-toolbox.nix {inherit pkgs;})
-  (import ./vlc.nix {inherit pkgs;})
-  (import ./sketchybar-app-font.nix {inherit pkgs;})
+    (import ./raycast.nix { inherit pkgs; })
+    (import ./jetbrains-toolbox.nix { inherit pkgs; })
+    (import ./vlc.nix { inherit pkgs; })
+    (import ./sketchybar-app-font.nix { inherit pkgs; })
   ];
 
   home.sessionPath = [
@@ -156,43 +156,34 @@ in
     "/Users/romanbartusiak/.local/bin"
   ];
   home.sessionVariables = {
-    EDITOR= "vim";
+    EDITOR = "vim";
   };
 
+  home.file = lib.mkMerge [
+    {
+      ".config/starship.toml" = {
+        source = ./starship.toml;
+      };
+      "Pictures/Backgrounds/1.jpg" = {
+        source = ./bg.jpg;
+      };
+      ".config/sketchybar" = {
+        source = ./sketchybar;
+        recursive = true;
+      };
 
-
-    home.file = lib.mkMerge[
+      "Library/Application Support/discord/settings.json".text = ''
       {
-
-
-  ".config/starship.toml" = {
-    source = ./starship.toml;
-  };
-  "Pictures/Backgrounds/1.jpg" = {
-    source = ./bg.jpg;
-  };
-  ".config/sketchybar" = {
-    source = ./sketchybar;
-    recursive = true;
-  };
-
-  "Library/Application\ Support/discord/settings.json".text = ''
-  {
-
-    "MIN_WIDTH":0,
-    "MIN_HEIGHT":0
-
-  }
-  '';
-
-  ".hushlogin".text = ''
-  '';
+        "MIN_WIDTH":0,
+        "MIN_HEIGHT":0
       }
+      '';
+
+      ".hushlogin".text = "";
+    }
     (builtins.listToAttrs (builtins.map (jdk: {
-    name = ".jdks/${jdk.version}";
-    value = { source = jdk; };
-  }) additionalJDKs))
-    ];
-    
-     
+      name = ".jdks/${jdk.version}";
+      value = { source = jdk; };
+    }) additionalJDKs))
+  ];
 }

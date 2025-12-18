@@ -1,8 +1,14 @@
 { pkgs, lib, inputs, ... }:
 {
+  # Import nix-homebrew module
+  imports = [
+    inputs.nix-homebrew.darwinModules.nix-homebrew
+  ];
+
   ids.gids.nixbld = 30000;
-system.stateVersion=5;
-homebrew = {
+  system.stateVersion = 5;
+
+  homebrew = {
     enable = true;
     global = {
       autoUpdate = true;
@@ -11,18 +17,19 @@ homebrew = {
       autoUpdate = true;
       upgrade = true;
       cleanup = "none";
-      extraFlags = ["--force"];
+      extraFlags = [ "--force" ];
     };
-    brews = pkgs.callPackage ./brews.nix {};
-    casks = pkgs.callPackage ./casks.nix {};
+    brews = pkgs.callPackage ./brews.nix { };
+    casks = pkgs.callPackage ./casks.nix { };
   };
+
   # Nix configuration ------------------------------------------------------------------------------
   nix.settings.auto-optimise-store = false;
-nix.gc = {
-  automatic = true;
-  interval = { Weekday = 0; Hour = 0; Minute = 0; };
-  options = "--delete-older-than 7d";
-};
+  nix.gc = {
+    automatic = true;
+    interval = { Weekday = 0; Hour = 0; Minute = 0; };
+    options = "--delete-older-than 7d";
+  };
   nix.settings.substituters = [
     "https://cache.nixos.org/"
   ];
@@ -34,13 +41,14 @@ nix.gc = {
   nix.settings.trusted-users = [
     "@admin"
   ];
-  nixpkgs.config={
-        allowUnfree = true;
+
+  nixpkgs.config = {
+    allowUnfree = true;
   };
-  users.users.romanbartusiak.home= "/Users/romanbartusiak";
+
+  users.users.romanbartusiak.home = "/Users/romanbartusiak";
 
   # Enable experimental nix command and flakes
-  # nix.package = pkgs.nixUnstable;
   nix.extraOptions = ''
     experimental-features = nix-command flakes
   '' + lib.optionalString (pkgs.system == "aarch64-darwin") ''
@@ -50,29 +58,25 @@ nix.gc = {
   # Create /etc/bashrc that loads the nix-darwin environment.
   programs.zsh.enable = true;
 
-
-
-
-
   programs.nix-index.enable = true;
 
   # Fonts
   fonts.packages = with pkgs; [
-      recursive
-      nerd-fonts.jetbrains-mono
-      nerd-fonts.fira-code
-      nerd-fonts.droid-sans-mono
-      nerd-fonts.sauce-code-pro
-      source-code-pro
-      noto-fonts
-      noto-fonts-cjk-sans
-      noto-fonts-emoji
-      liberation_ttf
-      fira-code
-      fira-code-symbols
-      mplus-outline-fonts.githubRelease
-      proggyfonts
-   ];
+    recursive
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.fira-code
+    nerd-fonts.droid-sans-mono
+    nerd-fonts.sauce-code-pro
+    source-code-pro
+    noto-fonts
+    noto-fonts-cjk-sans
+    noto-fonts-emoji
+    liberation_ttf
+    fira-code
+    fira-code-symbols
+    mplus-outline-fonts.githubRelease
+    proggyfonts
+  ];
 
   # Keyboard
   system.keyboard.enableKeyMapping = true;
@@ -81,8 +85,6 @@ nix.gc = {
   # Add ability to used TouchID for sudo authentication
   security.pam.services.sudo_local.touchIdAuth = true;
 
-
-  #boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
   system = {
     primaryUser = "romanbartusiak";
 
@@ -112,8 +114,6 @@ nix.gc = {
       # Follow the keyboard focus while zoomed in
       defaults write com.apple.universalaccess closeViewZoomFollowsFocus -bool true
       # Set language and text formats
-      # Note: if you’re in the US, replace `EUR` with `USD`, `Centimeters` with
-      # `Inches`, `en_GB` with `en_US`, and `true` with `false`.
       defaults write NSGlobalDomain AppleLanguages -array "pl"
       defaults write NSGlobalDomain AppleLocale -string "pl_PL@currency=PLN"
       defaults write NSGlobalDomain AppleMeasurementUnits -string "Centimeters"
@@ -212,7 +212,7 @@ nix.gc = {
     };
   };
 
- services.yabai = {
+  services.yabai = {
     enable = true;
     config = {
       focus_follows_mouse          = "autoraise";
@@ -230,96 +230,110 @@ nix.gc = {
       left_padding                 = 10;
       right_padding                = 10;
       window_gap                   = 10;
-      external_bar = all:35:0;
+      external_bar = "all:35:0";
     };
-
 
     extraConfig = ''
-        # rules
-        yabai -m rule --add app="^(Telegram)$" space=3;
-        yabai -m rule --add app='Ustawienia systemowe' manage=off;
-        apps="^(IntelliJ IDEA|WebStorm|RubyMine|PyCharm|DataGrip)$";
-        yabai -m rule --add app="^(Spotify)$" space=8;
-        yabai -m rule --add app="^(Slack)$" space=10;
-        yabai -m rule --add app="^(Discord)$" space=10;
-        yabai -m rule --add app="^(Messanger)$" space=9;
-        yabai -m rule --add app="^(WhatsApp)$" space=9;
-        
-        yabai -m signal --add event=window_focused action="sketchybar --trigger window_focus"
-        yabai -m signal --add event=window_created action="sketchybar --trigger windows_on_spaces"
-        yabai -m signal --add event=window_destroyed action="sketchybar --trigger windows_on_spaces"
-      '';
+      # rules
+      yabai -m rule --add app="^(Telegram)$" space=3;
+      yabai -m rule --add app='Ustawienia systemowe' manage=off;
+      apps="^(IntelliJ IDEA|WebStorm|RubyMine|PyCharm|DataGrip)$";
+      yabai -m rule --add app="^(Spotify)$" space=8;
+      yabai -m rule --add app="^(Slack)$" space=10;
+      yabai -m rule --add app="^(Discord)$" space=10;
+      yabai -m rule --add app="^(Messanger)$" space=9;
+      yabai -m rule --add app="^(WhatsApp)$" space=9;
+
+      yabai -m signal --add event=window_focused action="sketchybar --trigger window_focus"
+      yabai -m signal --add event=window_created action="sketchybar --trigger windows_on_spaces"
+      yabai -m signal --add event=window_destroyed action="sketchybar --trigger windows_on_spaces"
+    '';
+  };
+
+  services.skhd = {
+    enable = true;
+    skhdConfig = ''
+      ctrl - return : open -na /Applications/kitty.app --args -c /Users/romanbartusiak/.config/kitty/kitty.conf -T term /Users/romanbartusiak
+
+      ctrl - b : yabai -m space --layout bsp
+      ctrl - s : yabai -m space --layout stack
+
+      ctrl - down : yabai -m window --focus stack.next || yabai -m window --focus south
+      ctrl - up : yabai -m window --focus stack.prev || yabai -m window --focus north
+      ctrl  - left : yabai -m window --focus west
+      ctrl  - right : yabai -m window --focus east
+
+      ctrl + shift - 1 : yabai -m window --space 1
+      ctrl + shift - 2 : yabai -m window --space 2
+      ctrl + shift - 3 : yabai -m window --space 3
+      ctrl + shift - 4 : yabai -m window --space 4
+      ctrl + shift - 5 : yabai -m window --space 5
+      ctrl + shift - 6 : yabai -m window --space 6
+      ctrl + shift - 7 : yabai -m window --space 7
+      ctrl + shift - 8 : yabai -m window --space 8
+      ctrl + shift - 9 : yabai -m window --space 9
+
+
+      ctrl - f : yabai -m window --toggle zoom-fullscreen
+
+      ctrl + shift -right: yabai -m window --warp east
+      ctrl + shift -left: yabai -m window --warp west
+      ctrl + shift -up: yabai -m window --warp north
+
+      ctrl + shift -down: yabai -m window --warp south
+
+      ctrl - q : yabai -m window --close
+
+      ctrl + shift - q : launchctl kickstart -k "gui/501/org.nixos.yabai"
+    '';
+  };
+
+  services.sketchybar.enable = true;
+
+  launchd.user.agents.borders = {
+    serviceConfig.ProgramArguments = ["${pkgs.jankyborders}/bin/borders" "hidpi=on" "active_color=0xff30aa49" "inactive_color=0x1130aa49" "width=6.0" "blacklist=sketchybar" ];
+    serviceConfig.KeepAlive = true;
+    serviceConfig.RunAtLoad = true;
+  };
+
+  launchd.daemons.nix-optimize = {
+    serviceConfig.ProgramArguments = [ "${pkgs.nix}/bin/nix" "store" "optimise" ];
+    serviceConfig.StartCalendarInterval=[{ Hour = 17; }];
+    serviceConfig.StandardOutPath = "/tmp/nix-optimize.log";
+    serviceConfig.StandardErrorPath = "/tmp/nix-optimize.log";
+  };
+
+  environment.systemPackages = with pkgs; [
+    skhd
+    sketchybar
+    jq
+    pipx
+  ];
+
+  # add environment variables
+  environment.variables = {
+     HOMEBREW_UPGRADE_GREEDY = "true";
+  };
+
+  home-manager.useGlobalPkgs = true;
+  home-manager.useUserPackages = true;
+  home-manager.users.romanbartusiak = import ../home-manager/default.nix;
+  home-manager.extraSpecialArgs = { inherit inputs; };
+  home-manager.backupFileExtension = "backup";
+
+  # Nix Homebrew configuration
+  nix-homebrew = {
+    enable = true;
+    enableRosetta = true;
+    user = "romanbartusiak";
+    mutableTaps = false;
+    taps = {
+      "homebrew/homebrew-core" = inputs.homebrew-core;
+      "homebrew/homebrew-cask" = inputs.homebrew-cask;
+      "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
+      "bufbuild/homebrew-buf" = inputs.homebrew-bufbuild;
+      "cockroachdb/homebrew-cockroach" = inputs.homebrew-cocroach;
+      "hashicorp/homebrew-hashicorp" = inputs.homebrew-hashicorp;
     };
-    services.skhd = {
-      enable =true;
-      skhdConfig = ''
-        ctrl - return : open -na /Applications/kitty.app --args -c /Users/romanbartusiak/.config/kitty/kitty.conf -T term /Users/romanbartusiak
-
-        ctrl - b : yabai -m space --layout bsp
-        ctrl - s : yabai -m space --layout stack
-
-        ctrl - down : yabai -m window --focus stack.next || yabai -m window --focus south
-        ctrl - up : yabai -m window --focus stack.prev || yabai -m window --focus north
-        ctrl  - left : yabai -m window --focus west
-        ctrl  - right : yabai -m window --focus east
-
-        ctrl + shift - 1 : yabai -m window --space 1
-        ctrl + shift - 2 : yabai -m window --space 2
-        ctrl + shift - 3 : yabai -m window --space 3
-        ctrl + shift - 4 : yabai -m window --space 4
-        ctrl + shift - 5 : yabai -m window --space 5
-        ctrl + shift - 6 : yabai -m window --space 6
-        ctrl + shift - 7 : yabai -m window --space 7
-        ctrl + shift - 8 : yabai -m window --space 8
-        ctrl + shift - 9 : yabai -m window --space 9
-        
-
-        ctrl - f : yabai -m window --toggle zoom-fullscreen
-
-        ctrl + shift -right: yabai -m window --warp east
-        ctrl + shift -left: yabai -m window --warp west
-        ctrl + shift -up: yabai -m window --warp north
-
-
-
-        ctrl + shift -down: yabai -m window --warp south
-
-        ctrl - q : yabai -m window --close
-
-        ctrl + shift - q : launchctl kickstart -k "gui/501/org.nixos.yabai"
-
-      '';
-    };
-
-
-    services.sketchybar.enable=true;
-
-    launchd.user.agents.borders = {
-      serviceConfig.ProgramArguments = ["${pkgs.jankyborders}/bin/borders" "hidpi=on" "active_color=0xff30aa49" "inactive_color=0x1130aa49" "width=6.0" "blacklist=sketchybar" ];
-      serviceConfig.KeepAlive = true;
-      serviceConfig.RunAtLoad = true;
-
-    }; 
-
-    launchd.daemons.nix-optimize = {
-      serviceConfig.ProgramArguments = [ "${pkgs.nix}/bin/nix" "store" "optimise" ];
-      serviceConfig.StartCalendarInterval=[{ Hour = 17; }];
-      serviceConfig.StandardOutPath = "/tmp/nix-optimize.log";
-      serviceConfig.StandardErrorPath = "/tmp/nix-optimize.log";
-    };
-
-    environment.systemPackages = with pkgs; [
-      skhd
-      sketchybar
-      jq 
-      pipx
-    ];
-
-    # add environment variables
-    environment.variables = {
-       HOMEBREW_UPGRADE_GREEDY = "true";
-    };
-  home-manager.backupFileExtension="backup";
-
-    
+  };
 }
