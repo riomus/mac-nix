@@ -288,7 +288,16 @@
     '';
   };
 
-  services.sketchybar.enable = true;
+  launchd.user.agents.sketchybar = {
+    serviceConfig.ProgramArguments = [ "/opt/homebrew/bin/sketchybar" ];
+    serviceConfig.KeepAlive = true;
+    serviceConfig.RunAtLoad = true;
+    serviceConfig.StandardOutPath = "/tmp/sketchybar.log";
+    serviceConfig.StandardErrorPath = "/tmp/sketchybar.log";
+    serviceConfig.EnvironmentVariables = {
+      PATH = "/opt/homebrew/bin:$PATH";
+    };
+  };
 
   launchd.user.agents.borders = {
     serviceConfig.ProgramArguments = ["${pkgs.jankyborders}/bin/borders" "hidpi=on" "active_color=0xff30aa49" "inactive_color=0x1130aa49" "width=6.0" "blacklist=sketchybar" ];
@@ -305,7 +314,6 @@
 
   environment.systemPackages = with pkgs; [
     skhd
-    sketchybar
     jq
     pipx
   ];
