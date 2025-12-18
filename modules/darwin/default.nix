@@ -219,7 +219,7 @@
     serviceConfig.StandardOutPath = "/tmp/yabai.log";
     serviceConfig.StandardErrorPath = "/tmp/yabai.log";
     serviceConfig.EnvironmentVariables = {
-      PATH = "/opt/homebrew/bin:$PATH";
+      PATH = "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH";
     };
   };
 
@@ -230,18 +230,18 @@
     serviceConfig.StandardOutPath = "/tmp/skhd.log";
     serviceConfig.StandardErrorPath = "/tmp/skhd.log";
     serviceConfig.EnvironmentVariables = {
-      PATH = "/opt/homebrew/bin:$PATH";
+      PATH = "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH";
     };
   };
 
   launchd.user.agents.sketchybar = {
-    serviceConfig.ProgramArguments = [ "/opt/homebrew/bin/sketchybar" ];
+    serviceConfig.ProgramArguments = [ "/opt/homebrew/bin/sketchybar" "-c" "/Users/romanbartusiak/.config/sketchybar/sketchybarrc" ];
     serviceConfig.KeepAlive = true;
     serviceConfig.RunAtLoad = true;
     serviceConfig.StandardOutPath = "/tmp/sketchybar.log";
     serviceConfig.StandardErrorPath = "/tmp/sketchybar.log";
     serviceConfig.EnvironmentVariables = {
-      PATH = "/opt/homebrew/bin:$PATH";
+      PATH = "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH";
     };
   };
 
@@ -279,7 +279,7 @@
     enable = true;
     enableRosetta = true;
     user = "romanbartusiak";
-    mutableTaps = false;
+    mutableTaps = true;
     taps = {
       "homebrew/homebrew-core" = inputs.homebrew-core;
       "homebrew/homebrew-cask" = inputs.homebrew-cask;
