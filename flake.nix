@@ -60,7 +60,7 @@
     overlays = import ./overlays { inherit inputs; };
   in
   {
-    darwinConfigurations."Romans-MacBook-Pro" = darwinSystem {
+    darwinConfigurations."HVX3TJNXW7" = darwinSystem {
       system = "aarch64-darwin";
       specialArgs = { inherit inputs; };
       modules = [

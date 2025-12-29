@@ -2,8 +2,7 @@
 let
   vscode-extensions = inputs.nix-vscode-extensions.extensions.aarch64-darwin;
   additionalJDKs = with pkgs; [ temurin-bin-21 temurin-bin-17 ];
-in
-{
+in {
   home.stateVersion = "24.05";
   home.enableNixpkgsReleaseCheck = true;
 
@@ -22,26 +21,25 @@ in
   programs.vscode = {
     enable = true;
     mutableExtensionsDir = true;
-    profiles.default.extensions = (with pkgs.vscode-extensions; [
-        dracula-theme.theme-dracula
-      ]) ++ (with vscode-extensions.vscode-marketplace; [
+    profiles.default.extensions =
+      (with pkgs.vscode-extensions; [ dracula-theme.theme-dracula ])
+      ++ (with vscode-extensions.vscode-marketplace; [
         jnoortheen.nix-ide
         kamikillerto.vscode-colorize
         tamasfe.even-better-toml
       ]);
   };
 
-  programs.fzf = {
-    enable = true;
-  };
+  programs.fzf = { enable = true; };
 
   programs.git = {
     enable = true;
     userName = "Roman Bartusiak";
-    userEmail = "roman.bartusiak@yohana.com";
+    userEmail = "roman.bartusiak@ext.us.panasonic.com";
     extraConfig = {
-       url."ssh://git@github.com/".insteadOf = "https://github.com/";
-       push.default = "current";
+      url."ssh://git@github.com/".insteadOf = "https://github.com/";
+      push.default = "current";
+      core.sshCommand = "ssh -i ~/.ssh/id_riomus";
     };
     lfs.enable = true;
     aliases = {
@@ -50,14 +48,32 @@ in
       amdpf = "!git amd && git pf";
     };
     signing = {
-      key = "8BE7383653110620";
+      key = "1C7199BF";
       signByDefault = true;
     };
+    includes = [
+      {
+        condition = "gitdir:~/git/riomus/";
+        contents = {
+          user.name = "Roman Bartusiak";
+          user.email = "riomus@gmail.com";
+          user.signingKey = "620928E8";
+          core.sshCommand = "ssh -i ~/.ssh/id_riomus";
+        };
+      }
+      {
+        condition = "gitdir:~/git/panasonic/";
+        contents = {
+          user.name = "Roman Bartusiak";
+          user.email = "roman.bartusiak@ext.us.panasonic.com";
+          user.signingKey = "1C7199BF";
+          core.sshCommand = "ssh -i ~/.ssh/id_panasonic";
+        };
+      }
+    ];
   };
 
-  programs.starship = {
-    enable = true;
-  };
+  programs.starship = { enable = true; };
 
   programs.zsh = {
     enable = true;
@@ -67,21 +83,20 @@ in
     syntaxHighlighting.enable = true;
     zplug = {
       enable = true;
-      plugins = [
-          { name = "loiccoyle/zsh-github-copilot"; }
-        ];
-      };
+      plugins = [{ name = "loiccoyle/zsh-github-copilot"; }];
+    };
     oh-my-zsh = {
       enable = true;
       theme = "robbyrussell";
-      plugins = [ "git" "sudo" "docker" "kubectl" "aws"];
+      plugins = [ "git" "sudo" "docker" "kubectl" "aws" ];
     };
     shellAliases = {
       ls = "exa";
-      nixu = "nix flake update --flake ~/.config/nix && sudo  nix run nix-darwin -- switch --flake  ~/.config/nix";
+      nixu =
+        "nix flake update --flake ~/.config/nix && sudo  nix run nix-darwin -- switch --flake  ~/.config/nix";
       cat = "bat";
     };
-    initContent= ''
+    initContent = ''
       export PYENV_ROOT="$HOME/.pyenv"
       [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
       eval "$(pyenv init -)"
@@ -113,51 +128,51 @@ in
   };
   programs.navi.enable = true;
 
-  home.packages = with pkgs; [
-    # Some basics
-    awscli2
-    coreutils
-    curl
-    wget
-    btop
-    slack
-    bat
-    buf
-    gnupg
-    eza
-    duf
-    openjdk21
-    mtr
-    python312
-    wrk
-    spotify
-    gitAndTools.gh
-    hyperfine
-    neofetch
-    asitop
-    netcat
-    jq
-    postgresql
-    discord
-    telegram-desktop
-    jankyborders
-  ] ++ lib.optionals stdenv.isDarwin [
-    cocoapods
-    m-cli # useful macOS CLI commands
-  ] ++ [
-    (import ./raycast.nix { inherit pkgs; })
-    (import ./jetbrains-toolbox.nix { inherit pkgs; })
-    (import ./vlc.nix { inherit pkgs; })
-    (import ./sketchybar-app-font.nix { inherit pkgs; })
-  ];
+  home.packages = with pkgs;
+    [
+      # Some basics
+      awscli2
+      coreutils
+      curl
+      wget
+      btop
+      slack
+      bat
+      buf
+      gnupg
+      eza
+      duf
+      openjdk21
+      mtr
+      python312
+      wrk
+      spotify
+      gitAndTools.gh
+      hyperfine
+      neofetch
+      asitop
+      netcat
+      jq
+      postgresql
+      discord
+      telegram-desktop
+      jankyborders
+      nixfmt
+    ] ++ lib.optionals stdenv.isDarwin [
+      cocoapods
+      m-cli # useful macOS CLI commands
+    ] ++ [
+      (import ./raycast.nix { inherit pkgs; })
+      (import ./jetbrains-toolbox.nix { inherit pkgs; })
+      (import ./vlc.nix { inherit pkgs; })
+      (import ./sketchybar-app-font.nix { inherit pkgs; })
+    ];
 
   home.sessionPath = [
     "/Users/romanbartusiak/Library/Python/3.9/bin"
     "/Users/romanbartusiak/.local/bin"
   ];
-  home.sessionVariables = {
-    EDITOR = "vim";
-  };
+  home.sessionVariables = { EDITOR = "vim"; };
 
   # Yabai configuration
   xdg.configFile."yabai/yabairc" = {
@@ -203,56 +218,52 @@ in
   xdg.configFile."skhd/skhdrc".text = ''
     ctrl - return : open -na /Applications/kitty.app --args -c /Users/romanbartusiak/.config/kitty/kitty.conf -T term /Users/romanbartusiak
 
-    ctrl - b : yabai -m space --layout bsp
-    ctrl - s : yabai -m space --layout stack
+    ctrl - b : /opt/homebrew/bin/yabai -m space --layout bsp
+    ctrl - s : /opt/homebrew/bin/yabai -m space --layout stack
 
-    ctrl - down : yabai -m window --focus stack.next || yabai -m window --focus south
-    ctrl - up : yabai -m window --focus stack.prev || yabai -m window --focus north
-    ctrl  - left : yabai -m window --focus west
-    ctrl  - right : yabai -m window --focus east
+    ctrl - down : /opt/homebrew/bin/yabai -m window --focus stack.next || /opt/homebrew/bin/yabai -m window --focus south
+    ctrl - up : /opt/homebrew/bin/yabai -m window --focus stack.prev || /opt/homebrew/bin/yabai -m window --focus north
+    ctrl  - left : /opt/homebrew/bin/yabai -m window --focus west
+    ctrl  - right : /opt/homebrew/bin/yabai -m window --focus east
 
-    ctrl + shift - 1 : yabai -m window --space 1
-    ctrl + shift - 2 : yabai -m window --space 2
-    ctrl + shift - 3 : yabai -m window --space 3
-    ctrl + shift - 4 : yabai -m window --space 4
-    ctrl + shift - 5 : yabai -m window --space 5
-    ctrl + shift - 6 : yabai -m window --space 6
-    ctrl + shift - 7 : yabai -m window --space 7
-    ctrl + shift - 8 : yabai -m window --space 8
-    ctrl + shift - 9 : yabai -m window --space 9
+    ctrl + shift - 1 : y/opt/homebrew/bin/yabaiabai -m window --space 1
+    ctrl + shift - 2 : /opt/homebrew/bin/yabai -m window --space 2
+    ctrl + shift - 3 : /opt/homebrew/bin/yabai -m window --space 3
+    ctrl + shift - 4 : /opt/homebrew/bin/yabai -m window --space 4
+    ctrl + shift - 5 : /opt/homebrew/bin/yabai -m window --space 5
+    ctrl + shift - 6 : /opt/homebrew/bin/yabai -m window --space 6
+    ctrl + shift - 7 : /opt/homebrew/bin/yabai -m window --space 7
+    ctrl + shift - 8 : /opt/homebrew/bin/yabai -m window --space 8
+    ctrl + shift - 9 : /opt/homebrew/bin/yabai -m window --space 9
 
 
-    ctrl - f : yabai -m window --toggle zoom-fullscreen
+    ctrl - f : /opt/homebrew/bin/yabai -m window --toggle zoom-fullscreen
 
-    ctrl + shift -right: yabai -m window --warp east
-    ctrl + shift -left: yabai -m window --warp west
-    ctrl + shift -up: yabai -m window --warp north
+    ctrl + shift -right: /opt/homebrew/bin/yabai -m window --warp east
+    ctrl + shift -left: /opt/homebrew/bin/yabai -m window --warp west
+    ctrl + shift -up: /opt/homebrew/bin/yabai -m window --warp north
 
-    ctrl + shift -down: yabai -m window --warp south
+    ctrl + shift -down: /opt/homebrew/bin/yabai -m window --warp south
 
-    ctrl - q : yabai -m window --close
+    ctrl - q : /opt/homebrew/bin/yabai -m window --close
 
     ctrl + shift - q : launchctl kickstart -k "gui/501/org.nixos.yabai"
   '';
 
   home.file = lib.mkMerge [
     {
-      ".config/starship.toml" = {
-        source = ./starship.toml;
-      };
-      "Pictures/Backgrounds/1.jpg" = {
-        source = ./bg.jpg;
-      };
+      ".config/starship.toml" = { source = ./starship.toml; };
+      "Pictures/Backgrounds/1.jpg" = { source = ./bg.jpg; };
       ".config/sketchybar" = {
         source = ./sketchybar;
         recursive = true;
       };
 
       "Library/Application Support/discord/settings.json".text = ''
-      {
-        "MIN_WIDTH":0,
-        "MIN_HEIGHT":0
-      }
+        {
+          "MIN_WIDTH":0,
+          "MIN_HEIGHT":0
+        }
       '';
 
       ".hushlogin".text = "";

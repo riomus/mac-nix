@@ -5,7 +5,7 @@
     inputs.nix-homebrew.darwinModules.nix-homebrew
   ];
 
-  ids.gids.nixbld = 30000;
+  ids.gids.nixbld = 350;
   system.stateVersion = 5;
 
   homebrew = {
