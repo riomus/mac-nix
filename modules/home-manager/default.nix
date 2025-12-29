@@ -40,6 +40,7 @@ in {
       url."ssh://git@github.com/".insteadOf = "https://github.com/";
       push.default = "current";
       core.sshCommand = "ssh -i ~/.ssh/id_riomus";
+      pull.rebase = true;
     };
     lfs.enable = true;
     aliases = {

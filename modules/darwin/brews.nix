@@ -12,4 +12,6 @@ _:
   "gpg2"
   "gnupg"
   "pinentry-mac"
+  "uv"
+  "poetry"
 ]
