@@ -73,4 +73,8 @@ _:
     name = "antigravity";
     greedy = true;
   }
+  {
+    name = "rar";
+    greedy = true;
+  }
 ]
