@@ -77,4 +77,8 @@ _:
     name = "rar";
     greedy = true;
   }
+  {
+    name = "autodesk-fusion";
+    greedy = true;
+  }
 ]
