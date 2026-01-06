@@ -213,7 +213,7 @@
   };
 
   launchd.user.agents.yabai = {
-    serviceConfig.ProgramArguments = [ "/opt/homebrew/bin/yabai" ];
+    serviceConfig.ProgramArguments = [ "/opt/homebrew/bin/yabai" "-V" ];
     serviceConfig.KeepAlive = true;
     serviceConfig.RunAtLoad = true;
     serviceConfig.StandardOutPath = "/tmp/yabai.log";

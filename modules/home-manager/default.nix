@@ -185,7 +185,7 @@ in {
       yabai -m config focus_follows_mouse autoraise
       yabai -m config mouse_follows_focus off
       yabai -m config window_placement second_child
-      yabai -m config window_shadow none
+      #yabai -m config window_shadow none
       yabai -m config split_ratio 0.50
       yabai -m config auto_balance off
       yabai -m config mouse_modifier ctrl
