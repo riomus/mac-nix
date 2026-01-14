@@ -41,6 +41,7 @@ in {
       push.default = "current";
       core.sshCommand = "ssh -i ~/.ssh/id_riomus";
       pull.rebase = true;
+      rerere.enable = true;
     };
     lfs.enable = true;
     aliases = {
