@@ -104,6 +104,9 @@ in {
       eval "$(pyenv init -)"
       bindkey '«' zsh_gh_copilot_suggest
       bindkey '»' zsh_gh_copilot_explain
+      notify() {
+        osascript -e "tell application \"Messages\" to send \"$1\" to buddy \"+48880002457\""
+      }
     '';
   };
 

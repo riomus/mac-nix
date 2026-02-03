@@ -14,4 +14,5 @@ _:
   "pinentry-mac"
   "uv"
   "poetry"
+  "opencode"
 ]
