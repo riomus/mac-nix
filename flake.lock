@@ -78,11 +78,11 @@
     "homebrew-bufbuild": {
       "flake": false,
       "locked": {
-        "lastModified": 1768853819,
-        "narHash": "sha256-MiJc6cpT5t15DMQi8+/zDVFYb0fknApNYODKbntiUzM=",
+        "lastModified": 1770153152,
+        "narHash": "sha256-xhv9SiZLIDWfK5G1PyG43FKPBDmgjEBKNOYfcXbn3qg=",
         "owner": "bufbuild",
         "repo": "homebrew-buf",
-        "rev": "986d5bf317be7677db7324e4eb757abf999c397b",
+        "rev": "b8858d3ef3c0ff06229d2a9585a448c72e593aee",
         "type": "github"
       },
       "original": {
@@ -110,11 +110,11 @@
     "homebrew-cask": {
       "flake": false,
       "locked": {
-        "lastModified": 1769791190,
-        "narHash": "sha256-fl9k77jneMDm0CN7YEWR4Ft6beOc2Tsu7wIbtqyxAes=",
+        "lastModified": 1770494116,
+        "narHash": "sha256-mBOLNI9JBFM2tqz+/MsotNIcIXkMOabiaNcT/69en0E=",
         "owner": "homebrew",
         "repo": "homebrew-cask",
-        "rev": "b0c01e35aaf583c26adea7d31896bac8d39a7a54",
+        "rev": "4e9e67e241bd825d861553383b233adc92bba816",
         "type": "github"
       },
       "original": {
@@ -142,11 +142,11 @@
     "homebrew-core": {
       "flake": false,
       "locked": {
-        "lastModified": 1769792229,
-        "narHash": "sha256-md2FrLUFTNR/tdtricDxfu/kO95bwILwcoYw65xHaT8=",
+        "lastModified": 1770498856,
+        "narHash": "sha256-+8hLgdiit17AMI9Msu2O1GtaFoecN5ehh55755DuSDE=",
         "owner": "homebrew",
         "repo": "homebrew-core",
-        "rev": "6c80f1331ac85d90ec8cb889183a851628eb8b6c",
+        "rev": "4a58e793cdacc48d429af53b9d065ba0ee1cea7f",
         "type": "github"
       },
       "original": {
@@ -174,11 +174,11 @@
     "homebrew-hashicorp": {
       "flake": false,
       "locked": {
-        "lastModified": 1769630984,
-        "narHash": "sha256-QAgDXCjGqwT7Ey0E36bT5lrHMj0Sdbup10OFU1Dryig=",
+        "lastModified": 1770355929,
+        "narHash": "sha256-R+RtCFlJtBYyBiUpvlYY5AW10bHnquBurHVZgUJpmAo=",
         "owner": "hashicorp",
         "repo": "homebrew-tap",
-        "rev": "842a84f804f14f7e5815d75914f4e097b4d478df",
+        "rev": "7a7f4807b69c5a9daff325c91b27a952f597c6aa",
         "type": "github"
       },
       "original": {
@@ -200,6 +200,22 @@
       "original": {
         "owner": "koekeishiya",
         "repo": "homebrew-formulae",
+        "type": "github"
+      }
+    },
+    "homebrew-pulumi": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1770304429,
+        "narHash": "sha256-6iGlJMYKn+1RpDWebSpJ6PSb48LxMwFBUUCezYWSTMY=",
+        "owner": "pulumi",
+        "repo": "homebrew-tap",
+        "rev": "7f11315790d89515012973d8825086b06c9af286",
+        "type": "github"
+      },
+      "original": {
+        "owner": "pulumi",
+        "repo": "homebrew-tap",
         "type": "github"
       }
     },
@@ -226,11 +242,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1769740792,
-        "narHash": "sha256-SMIY+y9T9ioo+eM5XC2dE1FLjf0iUdCF3ayVlyKHDt0=",
+        "lastModified": 1770431965,
+        "narHash": "sha256-vVMfSjrmeYGfT+dj5eLZ8xNnJP62gvdW32IFQk606wM=",
         "owner": "nix-community",
         "repo": "nix-vscode-extensions",
-        "rev": "5af91c832cdc9c055015696433b395f43f2fc9c8",
+        "rev": "2b53743c0c65c6c525952fce502fe6eaa0913300",
         "type": "github"
       },
       "original": {
@@ -257,11 +273,11 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1769740369,
-        "narHash": "sha256-xKPyJoMoXfXpDM5DFDZDsi9PHArf2k5BJjvReYXoFpM=",
+        "lastModified": 1770380644,
+        "narHash": "sha256-P7dWMHRUWG5m4G+06jDyThXO7kwSk46C1kgjEWcybkE=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "6308c3b21396534d8aaeac46179c14c439a89b8a",
+        "rev": "ae67888ff7ef9dff69b3cf0cc0fbfbcd3a722abe",
         "type": "github"
       },
       "original": {
@@ -300,6 +316,7 @@
         "homebrew-felixkratz": "homebrew-felixkratz",
         "homebrew-hashicorp": "homebrew-hashicorp",
         "homebrew-koekeishiya": "homebrew-koekeishiya",
+        "homebrew-pulumi": "homebrew-pulumi",
         "nix-homebrew": "nix-homebrew",
         "nix-vscode-extensions": "nix-vscode-extensions",
         "nixpkgs": "nixpkgs_2",

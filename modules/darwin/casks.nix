@@ -81,7 +81,6 @@ _:
     name = "autodesk-fusion";
     greedy = true;
   }
-  }
   {
     name = "tailscale";
     greedy = true;

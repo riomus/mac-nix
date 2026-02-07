@@ -15,4 +15,5 @@ _:
   "uv"
   "poetry"
   "opencode"
+  "pulumi/tap/pulumi"
 ]

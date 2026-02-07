@@ -52,6 +52,10 @@
       url = "github:koekeishiya/homebrew-formulae";
       flake = false;
     };
+    homebrew-pulumi = {
+      url = "github:pulumi/homebrew-tap";
+      flake = false;
+    };
   };
 
   outputs = { self, darwin, nixpkgs, home-manager, ... }@inputs:

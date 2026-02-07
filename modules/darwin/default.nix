@@ -289,6 +289,7 @@
       "hashicorp/homebrew-hashicorp" = inputs.homebrew-hashicorp;
       "felixkratz/homebrew-formulae" = inputs.homebrew-felixkratz;
       "koekeishiya/homebrew-formulae" = inputs.homebrew-koekeishiya;
+      "pulumi/homebrew-tap" = inputs.homebrew-pulumi;
     };
   };
 }
