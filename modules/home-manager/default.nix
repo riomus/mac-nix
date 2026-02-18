@@ -32,6 +32,17 @@ in {
 
   programs.fzf = { enable = true; };
 
+  programs.ssh = {
+    enable = true;
+    addKeysToAgent = "yes";
+    extraConfig = "UseKeychain yes";
+    matchBlocks = {
+      "github.com" = {
+        identitiesOnly = true;
+      };
+    };
+  };
+
   programs.git = {
     enable = true;
     userName = "Roman Bartusiak";
