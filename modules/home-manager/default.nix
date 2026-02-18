@@ -149,7 +149,6 @@ in {
       # Some basics
       awscli2
       coreutils
-      gnumake
       curl
       wget
       btop
@@ -186,6 +185,8 @@ in {
     ];
 
   home.sessionPath = [
+    "/opt/homebrew/opt/make/libexec/gnubin"
+    "/opt/homebrew/opt/helm@3/bin"
     "/Users/romanbartusiak/Library/Python/3.9/bin"
     "/Users/romanbartusiak/.local/bin"
   ];

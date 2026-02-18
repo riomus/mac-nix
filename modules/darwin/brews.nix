@@ -18,4 +18,5 @@ _:
   "pulumi/tap/pulumi"
   "age"
   "helm@3"
+  "make"
 ]
