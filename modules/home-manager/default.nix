@@ -149,6 +149,7 @@ in {
       # Some basics
       awscli2
       coreutils
+      gnumake
       curl
       wget
       btop

@@ -16,4 +16,6 @@ _:
   "poetry"
   "opencode"
   "pulumi/tap/pulumi"
+  "age"
+  "helm@3"
 ]
