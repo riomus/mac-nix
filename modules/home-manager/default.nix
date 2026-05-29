@@ -212,6 +212,20 @@ in {
       # aws CLI tab-completion (the binary ships its own completer).
       command -v aws_completer >/dev/null && complete -C aws_completer aws
 
+      # Lazy-load pyenv. `eval "$(pyenv init - zsh)"` costs ~100ms per
+      # shell start; deferring it until first python/pip/pyenv invocation
+      # makes shells launch instantly. Once the real init runs, shims hit
+      # PATH and these stubs delete themselves.
+      __pyenv_lazy_init() {
+        unset -f pyenv python pip python3 pip3 2>/dev/null
+        eval "$(command pyenv init - zsh)"
+      }
+      pyenv()   { __pyenv_lazy_init; pyenv "$@"; }
+      python()  { __pyenv_lazy_init; python "$@"; }
+      pip()     { __pyenv_lazy_init; pip "$@"; }
+      python3() { __pyenv_lazy_init; python3 "$@"; }
+      pip3()    { __pyenv_lazy_init; pip3 "$@"; }
+
       bindkey '«' zsh_gh_copilot_suggest
       bindkey '»' zsh_gh_copilot_explain
       notify() {
@@ -220,7 +234,13 @@ in {
     '';
   };
 
-  programs.pyenv.enable = true;
+  # pyenv binary + PYENV_ROOT, but skip the eager `eval "$(pyenv init -)"`
+  # that costs ~100ms per shell. The zsh initContent installs lazy stubs
+  # that run `pyenv init` only when python/pip/pyenv is first invoked.
+  programs.pyenv = {
+    enable = true;
+    enableZshIntegration = false;
+  };
   programs.kitty = {
     enable = true;
     settings = {

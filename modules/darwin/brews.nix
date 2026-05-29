@@ -2,8 +2,8 @@ _:
 
 [
   "bufbuild/buf/buf"
-  "cockroachdb/cockroach/cockroach"
-  "hashicorp/hashicorp/vault"
+  "cockroachdb/tap/cockroach"
+  "hashicorp/tap/vault"
   "gh"
   "zsh-completions"
   "felixkratz/formulae/sketchybar"

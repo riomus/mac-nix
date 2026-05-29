@@ -18,44 +18,6 @@
     
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
     nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
-
-    # Optional: Declarative tap management
-    homebrew-core = {
-      url = "github:homebrew/homebrew-core";
-      flake = false;
-    };
-    homebrew-cask = {
-      url = "github:homebrew/homebrew-cask";
-      flake = false;
-    };
-    homebrew-bundle = {
-      url = "github:homebrew/homebrew-bundle";
-      flake = false;
-    };
-    homebrew-bufbuild ={
-      url = "github:bufbuild/homebrew-buf";
-      flake = false;
-    };
-    homebrew-cocroach ={
-      url = "github:cockroachdb/homebrew-tap";
-      flake = false;
-    };
-    homebrew-hashicorp ={
-      url = "github:hashicorp/homebrew-tap";
-      flake = false;
-    };
-    homebrew-felixkratz = {
-      url = "github:FelixKratz/homebrew-formulae";
-      flake = false;
-    };
-    homebrew-koekeishiya = {
-      url = "github:koekeishiya/homebrew-formulae";
-      flake = false;
-    };
-    homebrew-pulumi = {
-      url = "github:pulumi/homebrew-tap";
-      flake = false;
-    };
   };
 
   outputs = { self, darwin, nixpkgs, home-manager, ... }@inputs:

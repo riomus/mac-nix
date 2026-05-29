@@ -10,16 +10,18 @@
 
   homebrew = {
     enable = true;
-    # Keep auto-update on activation only (predictable, runs when YOU rebuild).
-    # Dropped global.autoUpdate to avoid background traffic / double-fetching.
-    # upgrade=false so darwin-rebuild doesn't upgrade every brew+cask on each
-    # switch — upgrade manually with `brew upgrade` when desired.
+    # `global.autoUpdate` stays off so brew doesn't fetch on every CLI call.
+    # `onActivation.autoUpdate` + `upgrade` mean every `nixu` runs the
+    # equivalent of `brew update && brew bundle && brew upgrade` — fully
+    # integrated into the rebuild. Taps must be real git clones (not the
+    # nix-store symlinks that nix-homebrew creates when `taps = { … }` is
+    # set), which is why the taps block above is empty.
     global = {
       autoUpdate = false;
     };
     onActivation = {
       autoUpdate = true;
-      upgrade = false;
+      upgrade = true;
       cleanup = "none";
       extraFlags = [ "--force" ];
     };
@@ -288,22 +290,15 @@
   home-manager.extraSpecialArgs = { inherit inputs; };
   home-manager.backupFileExtension = "backup";
 
-  # Nix Homebrew configuration
+  # Nix Homebrew configuration — taps are NOT pinned via flake inputs. Brew
+  # manages them itself (real git clones in /opt/homebrew/Library/Taps), which
+  # is the only setup where `brew update`/`brew upgrade` actually work. Tap
+  # contents are no longer reproducible via the flake, but the brews/casks
+  # lists below still are.
   nix-homebrew = {
     enable = true;
     enableRosetta = true;
     user = "romanbartusiak";
     mutableTaps = true;
-    taps = {
-      "homebrew/homebrew-core" = inputs.homebrew-core;
-      "homebrew/homebrew-cask" = inputs.homebrew-cask;
-      "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
-      "bufbuild/homebrew-buf" = inputs.homebrew-bufbuild;
-      "cockroachdb/homebrew-cockroach" = inputs.homebrew-cocroach;
-      "hashicorp/homebrew-hashicorp" = inputs.homebrew-hashicorp;
-      "felixkratz/homebrew-formulae" = inputs.homebrew-felixkratz;
-      "koekeishiya/homebrew-formulae" = inputs.homebrew-koekeishiya;
-      "pulumi/homebrew-tap" = inputs.homebrew-pulumi;
-    };
   };
 }
