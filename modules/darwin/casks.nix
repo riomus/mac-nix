@@ -62,10 +62,6 @@ _:
     greedy = true;
   }
   {
-    name = "claude-code";
-    greedy = true;
-  }
-  {
     name = "jetbrains-toolbox";
     greedy = true;
   }
