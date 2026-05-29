@@ -10,12 +10,16 @@
 
   homebrew = {
     enable = true;
+    # Keep auto-update on activation only (predictable, runs when YOU rebuild).
+    # Dropped global.autoUpdate to avoid background traffic / double-fetching.
+    # upgrade=false so darwin-rebuild doesn't upgrade every brew+cask on each
+    # switch — upgrade manually with `brew upgrade` when desired.
     global = {
-      autoUpdate = true;
+      autoUpdate = false;
     };
     onActivation = {
       autoUpdate = true;
-      upgrade = true;
+      upgrade = false;
       cleanup = "none";
       extraFlags = [ "--force" ];
     };
@@ -72,7 +76,6 @@
     noto-fonts-cjk-sans
     noto-fonts-emoji
     liberation_ttf
-    fira-code
     fira-code-symbols
     mplus-outline-fonts.githubRelease
     proggyfonts

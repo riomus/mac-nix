@@ -53,6 +53,11 @@ in {
       core.sshCommand = "ssh -i ~/.ssh/id_riomus";
       pull.rebase = true;
       rerere.enable = true;
+      # Sign commits with SSH instead of GPG — ~10x faster (no gpg-agent
+      # round-trip) and uses the keys we already have. The .pub key paths
+      # must also be registered as Signing Keys on GitHub for the green
+      # "Verified" badge.
+      gpg.format = "ssh";
     };
     lfs.enable = true;
     aliases = {
@@ -61,7 +66,7 @@ in {
       amdpf = "!git amd && git pf";
     };
     signing = {
-      key = "1C7199BF";
+      key = "/Users/romanbartusiak/.ssh/id_panasonic.pub";
       signByDefault = true;
     };
     includes = [
@@ -70,7 +75,7 @@ in {
         contents = {
           user.name = "Roman Bartusiak";
           user.email = "riomus@gmail.com";
-          user.signingKey = "620928E8";
+          user.signingKey = "/Users/romanbartusiak/.ssh/id_riomus.pub";
           core.sshCommand = "ssh -i ~/.ssh/id_riomus";
         };
       }
@@ -79,7 +84,7 @@ in {
         contents = {
           user.name = "Roman Bartusiak";
           user.email = "roman.bartusiak@ext.us.panasonic.com";
-          user.signingKey = "1C7199BF";
+          user.signingKey = "/Users/romanbartusiak/.ssh/id_panasonic.pub";
           core.sshCommand = "ssh -i ~/.ssh/id_panasonic";
         };
       }
@@ -94,25 +99,119 @@ in {
     enableCompletion = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
-    zplug = {
-      enable = true;
-      plugins = [{ name = "loiccoyle/zsh-github-copilot"; }];
+    autocd = true;
+
+    # Default compinit rebuilds the dump on every shell start (~1.5s with
+    # brew's 182-entry zsh-completions dir in fpath). Use the cached dump
+    # and only do a full rebuild once per day. `mh-24` is "modified <24h
+    # ago" — the glob qualifier makes this fork-free.
+    completionInit = ''
+      autoload -Uz compinit
+      if [[ -n $HOME/.zcompdump(#qN.mh-24) ]]; then
+        compinit -C
+      else
+        compinit
+      fi
+    '';
+
+    history = {
+      size = 10000;
+      save = 10000;
+      share = true;
+      ignoreDups = true;
+      extended = true;
     };
-    oh-my-zsh = {
-      enable = true;
-      theme = "robbyrussell";
-      plugins = [ "git" "sudo" "docker" "kubectl" "aws" ];
-    };
+
+    # github-copilot suggest/explain plugin, sourced directly via home-manager
+    # rather than zplug — zplug's bookkeeping cost ~150ms per shell start.
+    plugins = [
+      {
+        name = "zsh-github-copilot";
+        src = pkgs.fetchFromGitHub {
+          owner = "loiccoyle";
+          repo = "zsh-github-copilot";
+          rev = "7c4157f8a28047bbd3b55be59b1df54dcc1f4ab0";
+          sha256 = "0615gnz3gzzlgcq71pxfsckx1bnfkgx1apji7b9cifcr71cn41ad";
+        };
+      }
+    ];
+
     shellAliases = {
       ls = "exa";
+      cat = "bat";
       nixu =
         "nix flake update --flake ~/.config/nix && sudo  nix run nix-darwin -- switch --flake  ~/.config/nix";
-      cat = "bat";
+
+      # git — high-traffic subset of oh-my-zsh's git plugin
+      g = "git";
+      gst = "git status";
+      gco = "git checkout";
+      gcb = "git checkout -b";
+      gc = "git commit -v";
+      gca = "git commit -a -v";
+      gcm = "git commit -m";
+      gp = "git push";
+      gpf = "git push --force-with-lease";
+      gl = "git pull";
+      gd = "git diff";
+      gds = "git diff --staged";
+      gb = "git branch";
+      gba = "git branch -a";
+      ga = "git add";
+      gaa = "git add --all";
+      glog = "git log --oneline --decorate --graph";
+      glo = "git log --oneline --decorate --graph --all";
+      gss = "git stash";
+      gsp = "git stash pop";
+      grb = "git rebase";
+      grbi = "git rebase -i";
+      grbc = "git rebase --continue";
+      gm = "git merge";
+
+      # kubectl
+      k = "kubectl";
+      kgp = "kubectl get pods";
+      kgs = "kubectl get services";
+      kgd = "kubectl get deployments";
+      kgn = "kubectl get nodes";
+      kaf = "kubectl apply -f";
+      kdel = "kubectl delete";
+      klog = "kubectl logs -f";
+      kex = "kubectl exec -it";
+
+      # docker
+      d = "docker";
+      dps = "docker ps";
+      dpsa = "docker ps -a";
+      dex = "docker exec -it";
+      dlog = "docker logs -f";
+      dimg = "docker images";
     };
+
+    # Brew-installed completions (docker, kubectl, helm, …) live under
+    # /opt/homebrew/share. They must be in fpath BEFORE compinit runs, so
+    # we set them here in .zshenv rather than .zshrc.
+    envExtra = ''
+      if [[ -d /opt/homebrew/share/zsh/site-functions ]]; then
+        fpath=(/opt/homebrew/share/zsh/site-functions $fpath)
+      fi
+      if [[ -d /opt/homebrew/share/zsh-completions ]]; then
+        fpath=(/opt/homebrew/share/zsh-completions $fpath)
+      fi
+    '';
+
     initContent = ''
-      export PYENV_ROOT="$HOME/.pyenv"
-      [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-      eval "$(pyenv init -)"
+      # ESC-ESC prepends `sudo` to the current command (omz sudo plugin replacement).
+      __prepend_sudo() {
+        [[ $BUFFER != sudo\ * ]] && BUFFER="sudo $BUFFER"
+        zle end-of-line
+      }
+      zle -N __prepend_sudo
+      bindkey "\e\e" __prepend_sudo
+
+      # aws CLI tab-completion (the binary ships its own completer).
+      command -v aws_completer >/dev/null && complete -C aws_completer aws
+
       bindkey '«' zsh_gh_copilot_suggest
       bindkey '»' zsh_gh_copilot_explain
       notify() {
@@ -265,7 +364,7 @@ in {
     ctrl  - left : /opt/homebrew/bin/yabai -m window --focus west
     ctrl  - right : /opt/homebrew/bin/yabai -m window --focus east
 
-    ctrl + shift - 1 : y/opt/homebrew/bin/yabaiabai -m window --space 1
+    ctrl + shift - 1 : /opt/homebrew/bin/yabai -m window --space 1
     ctrl + shift - 2 : /opt/homebrew/bin/yabai -m window --space 2
     ctrl + shift - 3 : /opt/homebrew/bin/yabai -m window --space 3
     ctrl + shift - 4 : /opt/homebrew/bin/yabai -m window --space 4
