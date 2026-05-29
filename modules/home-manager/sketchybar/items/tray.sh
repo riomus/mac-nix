@@ -3,9 +3,9 @@
 sketchybar --add alias "Centrum sterowania,Battery_battery" right --set "Centrum sterowania,Battery_battery";
 sketchybar --add alias "Centrum sterowania,CPU_mini" right  --set "Centrum sterowania,CPU_mini";
 sketchybar --add alias "Centrum sterowania,Network_speed" right --set "Centrum sterowania,Network_speed";
-sketchybar --add alias "Centrum sterowania,RAM_mini"  right --set "Centrum sterowania,RAM_mini" display=1,2;
-sketchybar --add alias "Centrum sterowania,GPU_mini" right --set "Centrum sterowania,GPU_mini" display=1,2;
-sketchybar --add alias "Centrum sterowania,Disk_mini" right   --set "Centrum sterowania,Disk_mini" display=1,2;
+sketchybar --add alias "Centrum sterowania,RAM_mini"  right --set "Centrum sterowania,RAM_mini";
+sketchybar --add alias "Centrum sterowania,GPU_mini" right --set "Centrum sterowania,GPU_mini";
+sketchybar --add alias "Centrum sterowania,Disk_mini" right   --set "Centrum sterowania,Disk_mini";
 stats_bracket=(
   background.color=$BACKGROUND_1
   background.border_color=$BACKGROUND_2

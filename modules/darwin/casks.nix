@@ -82,7 +82,7 @@ _:
     greedy = true;
   }
   {
-    name = "tailscale";
+    name = "tailscale-app";
     greedy = true;
   }
 ]

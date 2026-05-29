@@ -142,6 +142,27 @@ in {
       copy_on_select = true;
     };
   };
+
+  # kitty's __watch_conf__ kitten leaks file descriptors when watching a
+  # symlink into /nix/store (observed: ~11k FDs/sec until ENFILE). Replace
+  # the home-manager symlink with a real file copy so the watcher sees a
+  # stable inode.
+  home.activation.removeMaterializedKittyConf =
+    lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
+      rm -f $HOME/.config/kitty/kitty.conf
+    '';
+  home.activation.materializeKittyConf =
+    lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+      KITTY_CONF="$HOME/.config/kitty/kitty.conf"
+      if [ -L "$KITTY_CONF" ]; then
+        TARGET=$(readlink -f "$KITTY_CONF")
+        if [ -f "$TARGET" ]; then
+          $DRY_RUN_CMD rm -f "$KITTY_CONF"
+          $DRY_RUN_CMD install -m 0644 "$TARGET" "$KITTY_CONF"
+        fi
+      fi
+    '';
+
   programs.navi.enable = true;
 
   home.packages = with pkgs;
@@ -234,7 +255,7 @@ in {
 
   # skhd configuration
   xdg.configFile."skhd/skhdrc".text = ''
-    ctrl - return : open -na /Applications/kitty.app --args -c /Users/romanbartusiak/.config/kitty/kitty.conf -T term /Users/romanbartusiak
+    ctrl - return : L=/tmp/kitty-launch.lock; mkdir "$L" 2>/dev/null && { /Applications/kitty.app/Contents/MacOS/kitty --single-instance -d /Users/romanbartusiak -c /Users/romanbartusiak/.config/kitty/kitty.conf -T term >/dev/null 2>&1 & (sleep 0.5; rmdir "$L") & }
 
     ctrl - b : /opt/homebrew/bin/yabai -m space --layout bsp
     ctrl - s : /opt/homebrew/bin/yabai -m space --layout stack

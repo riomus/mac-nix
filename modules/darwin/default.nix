@@ -251,6 +251,16 @@
     serviceConfig.RunAtLoad = true;
   };
 
+  # Raise the system-wide open-files limits at boot. The defaults here were only
+  # 65535 with kern.maxfilesperproc == kern.maxfiles, meaning a single process
+  # could drain the entire file table ("too many open files in system").
+  launchd.daemons.sysctl-maxfiles = {
+    serviceConfig.ProgramArguments = [ "/usr/sbin/sysctl" "-w" "kern.maxfiles=524288" "kern.maxfilesperproc=262144" ];
+    serviceConfig.RunAtLoad = true;
+    serviceConfig.StandardOutPath = "/tmp/sysctl-maxfiles.log";
+    serviceConfig.StandardErrorPath = "/tmp/sysctl-maxfiles.log";
+  };
+
   launchd.daemons.nix-optimize = {
     serviceConfig.ProgramArguments = [ "${pkgs.nix}/bin/nix" "store" "optimise" ];
     serviceConfig.StartCalendarInterval=[{ Hour = 17; }];
@@ -261,6 +271,7 @@
   environment.systemPackages = with pkgs; [
     jq
     pipx
+    poetry
   ];
 
   # add environment variables

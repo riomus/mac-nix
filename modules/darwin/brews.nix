@@ -13,8 +13,6 @@ _:
   "gnupg"
   "pinentry-mac"
   "uv"
-  "poetry"
-  "opencode"
   "pulumi/tap/pulumi"
   "age"
   "helm@3"
