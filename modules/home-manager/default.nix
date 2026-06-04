@@ -125,6 +125,14 @@ in {
     # github-copilot suggest/explain plugin, sourced directly via home-manager
     # rather than zplug — zplug's bookkeeping cost ~150ms per shell start.
     plugins = [
+      # fzf-tab turns <Tab> into an fzf fuzzy picker. Listed first so it
+      # loads right after compinit and before autosuggestions/syntax-
+      # highlighting wrap the completion widgets (its load-order rule).
+      {
+        name = "fzf-tab";
+        src = pkgs.zsh-fzf-tab;
+        file = "share/fzf-tab/fzf-tab.plugin.zsh";
+      }
       {
         name = "zsh-github-copilot";
         src = pkgs.fetchFromGitHub {
@@ -201,6 +209,34 @@ in {
     '';
 
     initContent = ''
+      # Interactive completion behaviour — the subset of oh-my-zsh's
+      # lib/completion.zsh worth keeping. Pure zsh, no startup cost.
+      zmodload zsh/complist
+      # Arrow-navigable, highlighted menu instead of a flat list dump.
+      zstyle ':completion:*' menu select
+      bindkey -M menuselect '^[[Z' reverse-menu-complete   # shift-tab steps back
+      # Case-insensitive, then partial-word, then substring matching:
+      # `dow<Tab>` → Downloads, `c.t<Tab>` → config.toml.
+      zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
+      # Colour the listing using the same palette as `ls`.
+      zstyle ':completion:*' list-colors "''${(s.:.)LS_COLORS}"
+      # Group matches under descriptive headers (e.g. "external command",
+      # "alias") and show the description line.
+      zstyle ':completion:*' group-name '''
+      zstyle ':completion:*:descriptions' format '%F{yellow}-- %d --%f'
+      # Cache slow completers (apt/brew/etc.) under XDG cache.
+      zstyle ':completion:*' use-cache on
+      zstyle ':completion:*' cache-path "$HOME/.cache/zsh/zcompcache"
+
+      # fzf-tab tuning. menu-select above stays as the fallback if fzf-tab
+      # isn't loaded.
+      zstyle ':fzf-tab:*' switch-group ',' '.'          # cycle groups with , / .
+      zstyle ':fzf-tab:*' use-fzf-default-opts yes
+      # Preview directory contents with exa when completing cd/ls targets.
+      zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always --icons $realpath'
+      zstyle ':fzf-tab:complete:*:*' fzf-preview \
+        '[[ -d $realpath ]] && exa -1 --color=always --icons $realpath || bat --color=always --style=plain $realpath 2>/dev/null || cat $realpath'
+
       # ESC-ESC prepends `sudo` to the current command (omz sudo plugin replacement).
       __prepend_sudo() {
         [[ $BUFFER != sudo\ * ]] && BUFFER="sudo $BUFFER"
@@ -280,6 +316,18 @@ in {
           $DRY_RUN_CMD install -m 0644 "$TARGET" "$KITTY_CONF"
         fi
       fi
+    '';
+  # Materializing kitty.conf swaps its inode, so running kitty instances keep
+  # reading the old (removed) file and lose their styling after an update.
+  # SIGUSR1 tells kitty to reload its config from disk. Match the main "kitty"
+  # process only -- never the "kitten" helpers (signalling them is harmful).
+  home.activation.reloadKitty =
+    lib.hm.dag.entryAfter [ "materializeKittyConf" ] ''
+      /bin/ps -Axww -o pid=,args= 2>/dev/null \
+        | grep -E '/MacOS/kitty( |$)' \
+        | while read -r pid _rest; do
+            $DRY_RUN_CMD /bin/kill -USR1 "$pid" 2>/dev/null || true
+          done || true
     '';
 
   programs.navi.enable = true;
@@ -420,7 +468,8 @@ in {
       "Library/Application Support/discord/settings.json".text = ''
         {
           "MIN_WIDTH":0,
-          "MIN_HEIGHT":0
+          "MIN_HEIGHT":0,
+          "SKIP_HOST_UPDATE":true
         }
       '';
 
