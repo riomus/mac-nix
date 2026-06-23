@@ -32,6 +32,10 @@ in {
 
   programs.fzf = { enable = true; };
 
+  # mise, polyglot runtime/tool version manager (asdf replacement).
+  # https://mise.jdx.dev
+  programs.mise = { enable = true; };
+
   programs.ssh = {
     enable = true;
     addKeysToAgent = "yes";
@@ -267,6 +271,34 @@ in {
       notify() {
         osascript -e "tell application \"Messages\" to send \"$1\" to buddy \"+48880002457\""
       }
+
+      # Shared claude/codex tmux sessions (ai-start / ai-join / ai-ls).
+      [[ -f $HOME/.config/ai-tmux.zsh ]] && source $HOME/.config/ai-tmux.zsh
+
+      # claude-auto-retry: keep this in Home Manager instead of letting the
+      # installer mutate ~/.zshrc, which is a /nix/store symlink here.
+      unalias claude 2>/dev/null || true
+      claude() {
+        if [ "''${CLAUDE_AUTO_RETRY_ACTIVE}" = "1" ]; then
+          command claude "$@"
+          return $?
+        fi
+        if [ ! -f /opt/homebrew/lib/node_modules/claude-auto-retry/src/launcher.js ]; then
+          command claude "$@"
+          return $?
+        fi
+        export CLAUDE_AUTO_RETRY_ACTIVE=1
+        local _car_old_int_trap _car_old_term_trap
+        _car_old_int_trap=$(trap -p INT)
+        _car_old_term_trap=$(trap -p TERM)
+        trap 'unset CLAUDE_AUTO_RETRY_ACTIVE' INT TERM
+        node /opt/homebrew/lib/node_modules/claude-auto-retry/src/launcher.js "$@"
+        local _car_exit=$?
+        unset CLAUDE_AUTO_RETRY_ACTIVE
+        eval "''${_car_old_int_trap:-trap - INT}"
+        eval "''${_car_old_term_trap:-trap - TERM}"
+        return $_car_exit
+      }
     '';
   };
 
@@ -332,6 +364,25 @@ in {
 
   programs.navi.enable = true;
 
+  # tmux — backbone for the shared claude/codex sessions reachable from the
+  # phone over Tailscale (see ai-start / ai-join in the zsh initContent).
+  programs.tmux = {
+    enable = true;
+    mouse = true;
+    historyLimit = 100000;
+    escapeTime = 10;             # snappier ESC handling for vim/claude TUIs
+    terminal = "tmux-256color";
+    extraConfig = ''
+      # When laptop + phone attach to the SAME session, size the window to the
+      # smallest *currently attached* client so both see an identical mirror.
+      # Detach the phone (prefix d) and the laptop snaps back to full size.
+      set -g window-size smallest
+      setw -g aggressive-resize on
+      set -g focus-events on
+      set -ga terminal-overrides ",*256col*:Tc"   # truecolor passthrough
+    '';
+  };
+
   home.packages = with pkgs;
     [
       # Some basics
@@ -348,6 +399,7 @@ in {
       duf
       openjdk21
       mtr
+      mosh
       python312
       wrk
       spotify
@@ -357,6 +409,7 @@ in {
       asitop
       netcat
       jq
+      yq-go
       postgresql
       discord
       telegram-desktop
@@ -374,7 +427,7 @@ in {
 
   home.sessionPath = [
     "/opt/homebrew/opt/make/libexec/gnubin"
-    "/opt/homebrew/opt/helm@3/bin"
+    "/opt/homebrew/opt/helm@4/bin"
     "/Users/romanbartusiak/Library/Python/3.9/bin"
     "/Users/romanbartusiak/.local/bin"
   ];
@@ -422,7 +475,10 @@ in {
 
   # skhd configuration
   xdg.configFile."skhd/skhdrc".text = ''
-    ctrl - return : L=/tmp/kitty-launch.lock; mkdir "$L" 2>/dev/null && { /Applications/kitty.app/Contents/MacOS/kitty --single-instance -d /Users/romanbartusiak -c /Users/romanbartusiak/.config/kitty/kitty.conf -T term >/dev/null 2>&1 & (sleep 0.5; rmdir "$L") & }
+    # `open -na` forces a brand-new, fully independent kitty process for every
+    # launch. Without it (or with --single-instance) all terminals live inside a
+    # single process and closing one window tears down every other window too.
+    ctrl - return : /usr/bin/open -na /Applications/kitty.app --args -d /Users/romanbartusiak -c /Users/romanbartusiak/.config/kitty/kitty.conf -T term
 
     ctrl - b : /opt/homebrew/bin/yabai -m space --layout bsp
     ctrl - s : /opt/homebrew/bin/yabai -m space --layout stack
@@ -459,6 +515,7 @@ in {
   home.file = lib.mkMerge [
     {
       ".config/starship.toml" = { source = ./starship.toml; };
+      ".config/ai-tmux.zsh" = { source = ./ai-tmux.zsh; };
       "Pictures/Backgrounds/1.jpg" = { source = ./bg.jpg; };
       ".config/sketchybar" = {
         source = ./sketchybar;
@@ -474,6 +531,23 @@ in {
       '';
 
       ".hushlogin".text = "";
+
+      # Homebrew 6.0 makes tap-trust checks the default
+      # (HOMEBREW_REQUIRE_TAP_TRUST). Without trusting them, the `brew bundle`
+      # run during `nixu` activation refuses to load formulae from these
+      # third-party taps and aborts the rebuild. brew reads this file on every
+      # invocation from ~/.homebrew/trust.json (XDG_CONFIG_HOME is unset). Any
+      # NEW third-party tap added to brews.nix must also be listed here.
+      ".homebrew/trust.json".text = builtins.toJSON {
+        trustedtaps = [
+          "bufbuild/buf"
+          "cockroachdb/tap"
+          "felixkratz/formulae"
+          "hashicorp/tap"
+          "koekeishiya/formulae"
+          "pulumi/tap"
+        ];
+      };
     }
     (builtins.listToAttrs (builtins.map (jdk: {
       name = ".jdks/${jdk.version}";

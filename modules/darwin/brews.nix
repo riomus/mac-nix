@@ -15,6 +15,6 @@ _:
   "uv"
   "pulumi/tap/pulumi"
   "age"
-  "helm@3"
+  "helm@4"
   "make"
 ]
