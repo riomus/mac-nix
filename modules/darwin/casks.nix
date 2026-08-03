@@ -81,4 +81,8 @@ _:
     name = "tailscale-app";
     greedy = true;
   }
+  {
+    name = "shottr";
+    greedy = true;
+  }
 ]

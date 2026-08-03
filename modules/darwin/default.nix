@@ -1,4 +1,4 @@
-{ pkgs, lib, inputs, ... }:
+{ pkgs, lib, inputs, username, ... }:
 {
   # Import nix-homebrew module
   imports = [
@@ -52,7 +52,7 @@
     allowUnfree = true;
   };
 
-  users.users.romanbartusiak.home = "/Users/romanbartusiak";
+  users.users.${username}.home = "/Users/${username}";
 
   # Enable experimental nix command and flakes
   nix.extraOptions = ''
@@ -91,7 +91,7 @@
   security.pam.services.sudo_local.touchIdAuth = true;
 
   system = {
-    primaryUser = "romanbartusiak";
+    primaryUser = username;
 
     activationScripts.postActivation.text = ''
       ###############################################################################
@@ -178,6 +178,15 @@
         General -bool true \
         OpenWith -bool true \
         Privileges -bool true
+      ###############################################################################
+      # Shell completions                                                           #
+      ###############################################################################
+      # Homebrew creates $(brew --prefix)/share group-writable (admin). Both
+      # brew completion dirs are in fpath, so zsh's compaudit flags the whole
+      # tree as insecure and compinit stops to ask on every new shell. This is
+      # Homebrew's own documented fix, reapplied here because brew restores the
+      # group-write bit on some operations.
+      chmod go-w /opt/homebrew/share || true
     '';
     defaults = {
       NSGlobalDomain = {
@@ -240,7 +249,7 @@
   };
 
   launchd.user.agents.sketchybar = {
-    serviceConfig.ProgramArguments = [ "/opt/homebrew/bin/sketchybar" "-c" "/Users/romanbartusiak/.config/sketchybar/sketchybarrc" ];
+    serviceConfig.ProgramArguments = [ "/opt/homebrew/bin/sketchybar" "-c" "/Users/${username}/.config/sketchybar/sketchybarrc" ];
     serviceConfig.KeepAlive = true;
     serviceConfig.RunAtLoad = true;
     serviceConfig.StandardOutPath = "/tmp/sketchybar.log";
@@ -286,8 +295,8 @@
 
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
-  home-manager.users.romanbartusiak = import ../home-manager/default.nix;
-  home-manager.extraSpecialArgs = { inherit inputs; };
+  home-manager.users.${username} = import ../home-manager/default.nix;
+  home-manager.extraSpecialArgs = { inherit inputs username; };
   home-manager.backupFileExtension = "backup";
 
   # Nix Homebrew configuration — taps are NOT pinned via flake inputs. Brew
@@ -298,7 +307,7 @@
   nix-homebrew = {
     enable = true;
     enableRosetta = true;
-    user = "romanbartusiak";
+    user = username;
     mutableTaps = true;
   };
 }

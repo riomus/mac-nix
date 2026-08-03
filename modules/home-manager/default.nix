@@ -1,4 +1,4 @@
-{ pkgs, lib, inputs, ... }:
+{ pkgs, lib, inputs, username, ... }:
 let
   vscode-extensions = inputs.nix-vscode-extensions.extensions.aarch64-darwin;
   additionalJDKs = with pkgs; [ temurin-bin-21 temurin-bin-17 ];
@@ -42,6 +42,10 @@ in {
     extraConfig = "UseKeychain yes";
     matchBlocks = {
       "github.com" = {
+        user = "git";
+        # identitiesOnly without an explicit key offers nothing to the server,
+        # so name the recovered key here.
+        identityFile = "~/.ssh/id_riomus";
         identitiesOnly = true;
       };
     };
@@ -50,7 +54,7 @@ in {
   programs.git = {
     enable = true;
     userName = "Roman Bartusiak";
-    userEmail = "roman.bartusiak@ext.us.panasonic.com";
+    userEmail = "riomus@gmail.com";
     extraConfig = {
       url."ssh://git@github.com/".insteadOf = "https://github.com/";
       push.default = "current";
@@ -70,26 +74,20 @@ in {
       amdpf = "!git amd && git pf";
     };
     signing = {
-      key = "/Users/romanbartusiak/.ssh/id_panasonic.pub";
+      key = "/Users/${username}/.ssh/id_riomus.pub";
       signByDefault = true;
     };
+    # Per-account overrides. The riomus identity is also the global default
+    # above; this block is kept as the template for adding further accounts
+    # under ~/git/<account>/.
     includes = [
       {
         condition = "gitdir:~/git/riomus/";
         contents = {
           user.name = "Roman Bartusiak";
           user.email = "riomus@gmail.com";
-          user.signingKey = "/Users/romanbartusiak/.ssh/id_riomus.pub";
+          user.signingKey = "/Users/${username}/.ssh/id_riomus.pub";
           core.sshCommand = "ssh -i ~/.ssh/id_riomus";
-        };
-      }
-      {
-        condition = "gitdir:~/git/panasonic/";
-        contents = {
-          user.name = "Roman Bartusiak";
-          user.email = "roman.bartusiak@ext.us.panasonic.com";
-          user.signingKey = "/Users/romanbartusiak/.ssh/id_panasonic.pub";
-          core.sshCommand = "ssh -i ~/.ssh/id_panasonic";
         };
       }
     ];
@@ -152,7 +150,7 @@ in {
       ls = "exa";
       cat = "bat";
       nixu =
-        "nix flake update --flake ~/.config/nix && sudo  nix run nix-darwin -- switch --flake  ~/.config/nix";
+        "nix flake update --flake ~/git/riomus/mac-nix && sudo  nix run nix-darwin -- switch --flake  ~/git/riomus/mac-nix";
 
       # git — high-traffic subset of oh-my-zsh's git plugin
       g = "git";
@@ -428,10 +426,31 @@ in {
   home.sessionPath = [
     "/opt/homebrew/opt/make/libexec/gnubin"
     "/opt/homebrew/opt/helm@4/bin"
-    "/Users/romanbartusiak/Library/Python/3.9/bin"
-    "/Users/romanbartusiak/.local/bin"
+    "/Users/${username}/Library/Python/3.9/bin"
+    "/Users/${username}/.local/bin"
   ];
   home.sessionVariables = { EDITOR = "vim"; };
+
+  # The wallpaper file is placed under ~/Pictures/Backgrounds by home.file
+  # above, but nothing ever selected it — on a fresh machine macOS keeps its
+  # own default. Set it on activation so a rebuilt Mac looks right without a
+  # manual trip through System Settings. Non-fatal: osascript needs Automation
+  # permission, which is not available on the very first headless activation.
+  home.activation.setDesktopPicture =
+    lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+      /usr/bin/osascript -e 'tell application "System Events" to tell every desktop to set picture to "/Users/${username}/Pictures/Backgrounds/1.jpg"' || true
+    '';
+
+  # system.defaults sets NSGlobalDomain._HIHideMenuBar, but writing that pref
+  # does not affect a running session — it only takes hold after a logout.
+  # Until then macOS still reserves the 38px menu bar while yabai additionally
+  # reserves external_bar's 35px, so tiled windows sit ~38px too low. This
+  # AppleScript applies the same setting live, making the geometry correct
+  # immediately after a rebuild instead of after the next logout.
+  home.activation.hideMenuBar =
+    lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+      /usr/bin/osascript -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to true' || true
+    '';
 
   # Yabai configuration
   xdg.configFile."yabai/yabairc" = {
@@ -478,7 +497,7 @@ in {
     # `open -na` forces a brand-new, fully independent kitty process for every
     # launch. Without it (or with --single-instance) all terminals live inside a
     # single process and closing one window tears down every other window too.
-    ctrl - return : /usr/bin/open -na /Applications/kitty.app --args -d /Users/romanbartusiak -c /Users/romanbartusiak/.config/kitty/kitty.conf -T term
+    ctrl - return : /usr/bin/open -na /Applications/kitty.app --args -d /Users/${username} -c /Users/${username}/.config/kitty/kitty.conf -T term
 
     ctrl - b : /opt/homebrew/bin/yabai -m space --layout bsp
     ctrl - s : /opt/homebrew/bin/yabai -m space --layout stack
@@ -544,7 +563,13 @@ in {
           "cockroachdb/tap"
           "felixkratz/formulae"
           "hashicorp/tap"
-          "koekeishiya/formulae"
+          # yabai/skhd. The author renamed his GitHub account koekeishiya ->
+          # asmvik (same repo: 184 commits back to 2017, all from
+          # aasvi93@hotmail.com). brew follows the redirect and rewrites this
+          # file to the canonical new name, stripping "koekeishiya/formulae"
+          # again on every run — so only the new name is listed here, and
+          # brews.nix refers to asmvik/formulae/* to match.
+          "asmvik/formulae"
           "pulumi/tap"
         ];
       };

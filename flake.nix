@@ -21,14 +21,15 @@
   };
 
   outputs = { self, darwin, nixpkgs, home-manager, ... }@inputs:
-  let 
+  let
     inherit (darwin.lib) darwinSystem;
     overlays = import ./overlays { inherit inputs; };
-  in
-  {
-    darwinConfigurations."HVX3TJNXW7" = darwinSystem {
+
+    # The macOS account name differs per machine, so every path and option that
+    # used to hardcode "romanbartusiak" now comes from `username`.
+    mkDarwin = { username }: darwinSystem {
       system = "aarch64-darwin";
-      specialArgs = { inherit inputs; };
+      specialArgs = { inherit inputs username; };
       modules = [
         ./modules/darwin/default.nix
         home-manager.darwinModules.home-manager
@@ -41,6 +42,10 @@
         }
       ];
     };
+  in
+  {
+    darwinConfigurations."HVX3TJNXW7" = mkDarwin { username = "romanbartusiak"; };
+    darwinConfigurations."Romans-MacBook-Pro" = mkDarwin { username = "riomus"; };
 
     formatter.aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.nixpkgs-fmt;
   };
