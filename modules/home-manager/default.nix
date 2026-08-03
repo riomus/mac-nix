@@ -124,8 +124,16 @@ in {
       extended = true;
     };
 
-    # github-copilot suggest/explain plugin, sourced directly via home-manager
-    # rather than zplug — zplug's bookkeeping cost ~150ms per shell start.
+    # Plugins are sourced directly via home-manager rather than zplug —
+    # zplug's bookkeeping cost ~150ms per shell start.
+    #
+    # zsh-github-copilot was removed here: it shells out to
+    # `gh copilot suggest -t shell` / `gh copilot explain`, the interface of
+    # the old gh-copilot *extension*. gh 2.97 turned `copilot` into a
+    # built-in that launches GitHub's Copilot CLI instead, so the extension
+    # can no longer even be installed ("copilot" matches the name of a
+    # built-in command) and the plugin printed a warning on every new shell.
+    # Upstream's last commit is 2025-04-07 and does not account for this.
     plugins = [
       # fzf-tab turns <Tab> into an fzf fuzzy picker. Listed first so it
       # loads right after compinit and before autosuggestions/syntax-
@@ -134,15 +142,6 @@ in {
         name = "fzf-tab";
         src = pkgs.zsh-fzf-tab;
         file = "share/fzf-tab/fzf-tab.plugin.zsh";
-      }
-      {
-        name = "zsh-github-copilot";
-        src = pkgs.fetchFromGitHub {
-          owner = "loiccoyle";
-          repo = "zsh-github-copilot";
-          rev = "7c4157f8a28047bbd3b55be59b1df54dcc1f4ab0";
-          sha256 = "0615gnz3gzzlgcq71pxfsckx1bnfkgx1apji7b9cifcr71cn41ad";
-        };
       }
     ];
 
@@ -264,8 +263,6 @@ in {
       python3() { __pyenv_lazy_init; python3 "$@"; }
       pip3()    { __pyenv_lazy_init; pip3 "$@"; }
 
-      bindkey '«' zsh_gh_copilot_suggest
-      bindkey '»' zsh_gh_copilot_explain
       notify() {
         osascript -e "tell application \"Messages\" to send \"$1\" to buddy \"+48880002457\""
       }
